@@ -1,0 +1,44 @@
+{
+    "results": [
+        {
+            "route": [
+                {
+                    "from": "Coxs Bazar",
+                    "to": "Comilla",
+                    "transportType": "Road",
+                    "cost": 85,
+                    "duration": 1
+                },
+                {
+                    "from": "Comilla",
+                    "to": "Mohakhali",
+                    "transportType": "Road",
+                    "cost": 35,
+                    "duration": 1
+                }
+            ],
+            "totalCost": 120,
+            "totalDuration": 2
+        },
+        {
+            "route": [
+                {
+                    "from": "Coxs Bazar",
+                    "to": "Chittagong",
+                    "transportType": "Road",
+                    "cost": 50,
+                    "duration": 1
+                },
+                {
+                    "from": "Chittagong",
+                    "to": "Mohakhali",
+                    "transportType": "Road",
+                    "cost": 65,
+                    "duration": 1
+                }
+            ],
+            "totalCost": 115,
+            "totalDuration": 2
+        }
+    ]
+}

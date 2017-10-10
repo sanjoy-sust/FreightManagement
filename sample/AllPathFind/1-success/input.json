@@ -1,0 +1,10 @@
+{
+"source": "Stockholm",
+"destination": "Orlando",
+"modeOfTransports": ["Ocean", "Road"],
+"containerSize": 20,
+"durationFrom": 20,
+"durationTo": 25,
+"costFrom": 2500,
+"costTo": 4000
+}

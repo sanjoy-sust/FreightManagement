@@ -1,0 +1,85 @@
+{
+    "results": [
+        {
+            "route": [
+                {
+                    "from": "Stockholm",
+                    "to": "Gothenburg",
+                    "transportType": "Road",
+                    "cost": 420,
+                    "duration": 1
+                },
+                {
+                    "from": "Gothenburg",
+                    "to": "Savannah",
+                    "transportType": "Ocean",
+                    "cost": 1765,
+                    "duration": 23
+                },
+                {
+                    "from": "Savannah",
+                    "to": "Orlando",
+                    "transportType": "Road",
+                    "cost": 600,
+                    "duration": 1
+                }
+            ],
+            "totalCost": 2785,
+            "totalDuration": 25
+        },
+        {
+            "route": [
+                {
+                    "from": "Stockholm",
+                    "to": "Gothenburg",
+                    "transportType": "Road",
+                    "cost": 420,
+                    "duration": 1
+                },
+                {
+                    "from": "Gothenburg",
+                    "to": "Ft. Lauderdale",
+                    "transportType": "Ocean",
+                    "cost": 1623,
+                    "duration": 22
+                },
+                {
+                    "from": "Ft. Lauderdale",
+                    "to": "Orlando",
+                    "transportType": "Road",
+                    "cost": 600,
+                    "duration": 1
+                }
+            ],
+            "totalCost": 2643,
+            "totalDuration": 24
+        },
+        {
+            "route": [
+                {
+                    "from": "Stockholm",
+                    "to": "Rotterdam",
+                    "transportType": "Road",
+                    "cost": 1430,
+                    "duration": 3
+                },
+                {
+                    "from": "Rotterdam",
+                    "to": "Ft. Lauderdale",
+                    "transportType": "Ocean",
+                    "cost": 1623,
+                    "duration": 18
+                },
+                {
+                    "from": "Ft. Lauderdale",
+                    "to": "Orlando",
+                    "transportType": "Road",
+                    "cost": 600,
+                    "duration": 1
+                }
+            ],
+            "totalCost": 3653,
+            "totalDuration": 22
+        }
+    ]
+}

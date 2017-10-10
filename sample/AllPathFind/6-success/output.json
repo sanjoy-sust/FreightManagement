@@ -1,0 +1,44 @@
+{
+    "results": [
+        {
+            "route": [
+                {
+                    "from": "Coxs Bazar",
+                    "to": "Comilla",
+                    "transportType": "Road",
+                    "cost": 115,
+                    "duration": 1
+                },
+                {
+                    "from": "Comilla",
+                    "to": "Mirpur",
+                    "transportType": "Road",
+                    "cost": 62,
+                    "duration": 1
+                }
+            ],
+            "totalCost": 177,
+            "totalDuration": 2
+        },
+        {
+            "route": [
+                {
+                    "from": "Coxs Bazar",
+                    "to": "Chittagong",
+                    "transportType": "Road",
+                    "cost": 80,
+                    "duration": 1
+                },
+                {
+                    "from": "Chittagong",
+                    "to": "Mirpur",
+                    "transportType": "Road",
+                    "cost": 92,
+                    "duration": 1
+                }
+            ],
+            "totalCost": 172,
+            "totalDuration": 2
+        }
+    ]
+}

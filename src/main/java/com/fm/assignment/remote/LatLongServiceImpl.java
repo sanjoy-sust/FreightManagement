@@ -29,12 +29,14 @@ import java.net.URLEncoder;
 public class LatLongServiceImpl implements LatLongService {
     /**
      * Using google map api find latitude longitude of an address
+     *
      * @param address
      * @return
      * @throws RemoteApiException
      */
     @Override
     public LatLongModel getLatLongPositions(String address) throws RemoteApiException {
+        LatLongModel latLongModel = null;
         try {
             int responseCode;
             URL url = new URL(ApiUrlBuilder.buildGoogleMapApiUrl(address));
@@ -48,25 +50,30 @@ public class LatLongServiceImpl implements LatLongService {
                 XPath xpath = xPathfactory.newXPath();
                 XPathExpression expr = xpath.compile(ApiConstants.XPATH_STATUS_FIELD);
                 String status = (String) expr.evaluate(document, XPathConstants.STRING);
-                if (status.equals(HttpStatus.OK)) {
+                if (status.equals(HttpStatus.OK.name())) {
                     expr = xpath.compile(ApiConstants.XPATH_LATITUDE_FIELD);
                     String latitude = (String) expr.evaluate(document, XPathConstants.STRING);
                     expr = xpath.compile(ApiConstants.XPATH_LONGITUDE_FIELD);
                     String longitude = (String) expr.evaluate(document, XPathConstants.STRING);
-                    return LatLongModel.builder().latitude(Double.valueOf(latitude)).longitude(Double.valueOf(longitude)).build();
+                    latLongModel = LatLongModel.builder().latitude(Double.valueOf(latitude)).longitude(Double.valueOf(longitude)).build();
                 } else {
                     throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
-        }catch ( IOException
+        } catch (IOException
                 | ParserConfigurationException
                 | XPathExpressionException
                 | SAXException
-                exp){
+                exp) {
             throw new RemoteApiException(ErrorCodes.Feature.UNKNOWN,
-                    ErrorCodes.CODE.REMOTE_API_FAIL,ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
+                    ErrorCodes.CODE.REMOTE_API_FAIL, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
         }
-        return null;
+        if(latLongModel == null)
+        {
+            throw new RemoteApiException(ErrorCodes.Feature.UNKNOWN,
+                    ErrorCodes.CODE.REMOTE_API_FAIL, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
+        }
+        return latLongModel;
     }
 
 

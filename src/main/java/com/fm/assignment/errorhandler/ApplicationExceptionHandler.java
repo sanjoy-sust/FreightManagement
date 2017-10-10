@@ -25,10 +25,7 @@ public class ApplicationExceptionHandler {
     @ResponseBody
     public ErrorResponse handleException(HttpServletRequest request, ResourceNotFoundException exp) {
         log.error("Resource Not Found{}", exp);
-        ErrorResponse response = new ErrorResponse();
-        response.setCode(exp.getCode());
-        response.setFeature(exp.getFeature());
-        response.setMessage(exp.getReason());
+        ErrorResponse response = getErrorResponse(exp.getCode(), exp.getFeature(), exp.getReason());
         return response;
     }
 
@@ -37,10 +34,7 @@ public class ApplicationExceptionHandler {
     @ResponseBody
     public ErrorResponse handleDatabaseException(HttpServletRequest request, DatabaseException exp) {
         log.error("Database Exception {}", exp);
-        ErrorResponse response = new ErrorResponse();
-        response.setCode(exp.getCode());
-        response.setFeature(exp.getFeature());
-        response.setMessage(exp.getReason());
+        ErrorResponse response = getErrorResponse(exp.getCode(), exp.getFeature(), exp.getReason());
         return response;
     }
 
@@ -49,10 +43,7 @@ public class ApplicationExceptionHandler {
     @ResponseBody
     public ErrorResponse handleRemoteApiException(HttpServletRequest request, RemoteApiException exp) {
         log.error("Remote Api Exception {}", exp);
-        ErrorResponse response = new ErrorResponse();
-        response.setCode(exp.getCode());
-        response.setFeature(exp.getFeature());
-        response.setMessage(exp.getReason());
+        ErrorResponse response = getErrorResponse(exp.getCode(), exp.getFeature(), exp.getReason());
         return response;
     }
 
@@ -61,10 +52,9 @@ public class ApplicationExceptionHandler {
     @ResponseBody
     public ErrorResponse methodArgumentExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException exp) {
         log.error("Generic Exception ", exp);
-        ErrorResponse response = new ErrorResponse();
-        response.setCode(ErrorCodes.CODE.METHOD_ARG_NOT_VALID);
-        response.setFeature(ErrorCodes.Feature.UNKNOWN);
-        response.setMessage(ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.METHOD_ARG_NOT_VALID));
+        ErrorResponse response = getErrorResponse(ErrorCodes.CODE.METHOD_ARG_NOT_VALID,
+                ErrorCodes.Feature.UNKNOWN,
+                ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.METHOD_ARG_NOT_VALID));
         return response;
     }
 
@@ -73,10 +63,18 @@ public class ApplicationExceptionHandler {
     @ResponseBody
     public ErrorResponse genericExceptionHandler(HttpServletRequest request, Exception exp) {
         log.error("Generic Exception ", exp);
+        ErrorResponse response = getErrorResponse(ErrorCodes.CODE.GENERIC_ERROR,
+                ErrorCodes.Feature.UNKNOWN,
+                ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.GENERIC_ERROR));
+        return response;
+    }
+
+
+    private ErrorResponse getErrorResponse(String code, String feature, String reason) {
         ErrorResponse response = new ErrorResponse();
-        response.setCode(ErrorCodes.CODE.GENERIC_ERROR);
-        response.setFeature(ErrorCodes.Feature.UNKNOWN);
-        response.setMessage(ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.GENERIC_ERROR));
+        response.setCode(code);
+        response.setFeature(feature);
+        response.setMessage(reason);
         return response;
     }
 }

@@ -1,6 +1,8 @@
 package com.fm.assignment.core.util;
 
 import com.fm.assignment.core.entity.PathEntity;
+import com.fm.assignment.errorhandler.ErrorCodes;
+import com.fm.assignment.errorhandler.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -43,8 +45,14 @@ public class GraphBuilder{
      * @param location
      * @return
      */
-    public Map<String, PathEntity> pathFrom(String location) {
+    public Map<String, PathEntity> pathFrom(String location) throws ResourceNotFoundException {
         Map<String, PathEntity> paths = graph.get(location);
+        if (paths == null)
+        {
+            throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
+                    ErrorCodes.CODE.PATH_NOT_FOUND,
+                    ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PATH_NOT_FOUND));
+        }
         return Collections.unmodifiableMap(paths);
     }
 }

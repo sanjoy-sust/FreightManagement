@@ -1,6 +1,7 @@
 package com.fm.assignment.core.util;
 
 import com.fm.assignment.core.entity.PathEntity;
+import com.fm.assignment.errorhandler.ResourceNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -16,14 +17,14 @@ public class PathFinder {
         this.graphBuilder = graphBuilder;
     }
 
-    public List<List<PathEntity>> getAllPaths(String source, String destination) {
+    public List<List<PathEntity>> getAllPaths(String source, String destination) throws ResourceNotFoundException {
         List<List<PathEntity>> paths = new ArrayList<>();
         recursive(source, destination, paths, new LinkedHashSet<String>(), null, new LinkedHashSet<PathEntity>());
         return paths;
     }
 
 
-    private void recursive(String current, String destination, List<List<PathEntity>> routes, LinkedHashSet<String> path, PathEntity pathEntity, LinkedHashSet<PathEntity> pathList) {
+    private void recursive(String current, String destination, List<List<PathEntity>> routes, LinkedHashSet<String> path, PathEntity pathEntity, LinkedHashSet<PathEntity> pathList) throws ResourceNotFoundException {
         path.add(current);
         if (pathEntity != null) {
             pathList.add(pathEntity);

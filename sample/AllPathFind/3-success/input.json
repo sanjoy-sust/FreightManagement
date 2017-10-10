@@ -1,0 +1,6 @@
+{
+"source": "Coxs Bazar",
+"destination": "Banani",
+"modeOfTransports": ["All"],
+"containerSize": 20
+}

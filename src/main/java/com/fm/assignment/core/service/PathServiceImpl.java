@@ -134,12 +134,18 @@ public class PathServiceImpl implements PathService {
      * @return
      * @throws Exception
      */
-    private String findNearestLocationAsDestination(FindPathRequest request) throws RemoteApiException {
+    private String findNearestLocationAsDestination(FindPathRequest request) throws RemoteApiException, ResourceNotFoundException {
         String destinationCode;LatLongModel latLongModel = latLongService.getLatLongPositions(request.getDestination());
         List<PlaceEntity> allNearestPlaces = placeService.getAllNearestPlaces(
                 latLongModel.getLatitude(),
                 latLongModel.getLongitude(),
                 Constants.MINIMUM_DISTANCE_TO_NEAR_LOCATION);
+        if(allNearestPlaces.size() ==0)
+        {
+            throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
+                    ErrorCodes.CODE.DESTINATION_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
+        }
+
         double minimumDistance = Constants.MINIMUM_DISTANCE_TO_NEAR_LOCATION;
         PlaceEntity targetPlace = null;
         for (PlaceEntity placeEntity : allNearestPlaces) {

@@ -1,0 +1,6 @@
+{
+"source": "Coxs Bazar",
+"destination": "Uttara",
+"modeOfTransports": ["Road"],
+"containerSize": 40
+}

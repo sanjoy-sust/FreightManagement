@@ -1,11 +1,13 @@
 package com.fm.assignment.api.controller;
 
+import com.fm.assignment.api.validator.FindPathValidator;
 import com.fm.assignment.errorhandler.DatabaseException;
 import com.fm.assignment.errorhandler.ResourceNotFoundException;
 import com.fm.assignment.api.model.*;
 import com.fm.assignment.core.service.PathService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,6 +21,12 @@ import java.util.List;
 @Slf4j
 @RequestMapping(value = "path")
 public class PathController {
+
+ /*   @InitBinder
+    protected void initBinder(WebDataBinder webDataBinder)
+    {
+        webDataBinder.setValidator(new FindPathValidator());
+    }*/
 
     @Autowired
     private PathService pathService;

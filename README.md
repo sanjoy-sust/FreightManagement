@@ -3,12 +3,13 @@ Sample Spring boot project.
 
 This is a project to find all paths and cost between two locations.
 
-Used Technology : 
-Spring Boot-1.5.7   
-Spring data jpa  
-Google map api  
-Mysql database  
-Tomcat Web Server  
+**Used Technology :**
+
+* Spring Boot-1.5.7   
+* Spring data jpa  
+* Google map api  
+* Mysql database  
+* Tomcat Web Server  
 
 To run this project you have to follow below steps:
 

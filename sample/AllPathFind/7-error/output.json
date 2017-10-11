@@ -1,0 +1,5 @@
+{
+  "feature": "Path Find",
+  "code": "ERR-234",
+  "message": "Please check transportation mode and container size. Path not found for request."
+}

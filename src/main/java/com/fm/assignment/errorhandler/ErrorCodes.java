@@ -19,6 +19,8 @@ public class ErrorCodes {
         String PATH_NOT_FOUND = "ERR-230";
         String SOURCE_NOT_FOUND = "ERR-231";
         String DESTINATION_NOT_FOUND = "ERR-232";
+        String COST_DURATION_NOT_MATCHED = "ERR-233";
+        String ROUTE_TYPE_OR_CONTAINER_NOT_MATCHED = "ERR-234";
         String PATH_SAVE_FAIL = "ERR-233";
         String PLACE_SAVE_FAIL = "ERR-234";
         String REMOTE_API_FAIL = "ERR-235";
@@ -37,5 +39,7 @@ public class ErrorCodes {
         REASON_MAP.put(CODE.REMOTE_API_FAIL,"Google Map remote call error. Please check internet connection.");
         REASON_MAP.put(CODE.GENERIC_ERROR,"Internal Server Error!!!. Please communicate with vendor");
         REASON_MAP.put(CODE.METHOD_ARG_NOT_VALID,"Please check mandatory/optional fields of your request.");
+        REASON_MAP.put(CODE.COST_DURATION_NOT_MATCHED,"Please check Cost or Duration Range. Path not found for request.");
+        REASON_MAP.put(CODE.ROUTE_TYPE_OR_CONTAINER_NOT_MATCHED,"Please check transportation mode and container size. Path not found for request.");
     }
 }

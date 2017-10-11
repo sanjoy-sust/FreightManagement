@@ -1,0 +1,7 @@
+{
+  "feature": "Path Find",
+  "code": "ERR-233",
+  "message": "Please check Cost or Duration Range. Path not found for request."
+}
+
+//This will resolved in controller layer.

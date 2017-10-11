@@ -1,0 +1,10 @@
+{
+  "source": "Savannah",
+  "destination": "Ft. Lauderdale",
+  "modeOfTransports": ["Ocean", "Road"],
+  "containerSize": 20,
+  "durationFrom": 20,
+  "durationTo": 250,
+  "costFrom": 2500,
+  "costTo": 4000
+}

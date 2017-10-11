@@ -1,0 +1,5 @@
+{
+  "feature": "Path Find",
+  "code": "ERR-230",
+  "message": "Path not found for specific source and destination"
+}

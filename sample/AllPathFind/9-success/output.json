@@ -1,0 +1,44 @@
+{
+  "results": [
+    {
+      "route": [
+        {
+          "from": "Gothenburg",
+          "to": "Savannah",
+          "transportType": "Ocean",
+          "cost": 1765,
+          "duration": 23
+        },
+        {
+          "from": "Savannah",
+          "to": "Orlando",
+          "transportType": "Road",
+          "cost": 600,
+          "duration": 1
+        }
+      ],
+      "totalCost": 2365,
+      "totalDuration": 24
+    },
+    {
+      "route": [
+        {
+          "from": "Gothenburg",
+          "to": "Ft. Lauderdale",
+          "transportType": "Ocean",
+          "cost": 1623,
+          "duration": 22
+        },
+        {
+          "from": "Ft. Lauderdale",
+          "to": "Orlando",
+          "transportType": "Road",
+          "cost": 600,
+          "duration": 1
+        }
+      ],
+      "totalCost": 2223,
+      "totalDuration": 23
+    }
+  ]
+}

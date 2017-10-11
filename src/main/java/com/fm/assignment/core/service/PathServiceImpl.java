@@ -77,7 +77,7 @@ public class PathServiceImpl implements PathService {
     }
 
     /**
-     * This will check Source and
+     * This will check Source and Destination is valid or not
      * @param placeEntityFrom
      * @param placeEntityTo
      * @throws ResourceNotFoundException
@@ -113,7 +113,6 @@ public class PathServiceImpl implements PathService {
                     ErrorCodes.CODE.SOURCE_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.SOURCE_NOT_FOUND));
         }
         if (destinationCode == null) {
-
             destinationCode = findNearestLocationAsDestination(request);
         }
         if (destinationCode == null) {
@@ -121,6 +120,10 @@ public class PathServiceImpl implements PathService {
                     ErrorCodes.CODE.DESTINATION_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
         }
         List<List<PathEntity>> allPaths = getPaths(request, sourceCode, destinationCode);
+        if (allPaths == null || allPaths.size() == 0 ) {
+            throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
+                    ErrorCodes.CODE.PATH_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PATH_NOT_FOUND));
+        }
         FindPathResponse response = buildResponse(allPaths, request);
         return response;
     }
@@ -166,7 +169,7 @@ public class PathServiceImpl implements PathService {
     }
 
     /**
-     * This method used to find all paths from DB.
+     * This method used to find all paths from DB Using transportationMode and container size.
      * @param request
      * @param sourceCode
      * @param destinationCode
@@ -199,7 +202,7 @@ public class PathServiceImpl implements PathService {
         }
         if (pathEntityList.size() <= 0) {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
-                    ErrorCodes.CODE.PATH_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PATH_NOT_FOUND));
+                    ErrorCodes.CODE.ROUTE_TYPE_OR_CONTAINER_NOT_MATCHED, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.ROUTE_TYPE_OR_CONTAINER_NOT_MATCHED));
         }
         PathFinder findAllPaths = new PathFinder(paths);
         return findAllPaths.getAllPaths(sourceCode, destinationCode);
@@ -246,7 +249,7 @@ public class PathServiceImpl implements PathService {
         }
         if (results.size() == 0) {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
-                    ErrorCodes.CODE.PATH_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PATH_NOT_FOUND));
+                    ErrorCodes.CODE.COST_DURATION_NOT_MATCHED, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.COST_DURATION_NOT_MATCHED));
         }
         response.setResults(results);
         return response;
@@ -287,7 +290,7 @@ public class PathServiceImpl implements PathService {
     }
 
     /**
-     * build results from all routes.
+     * Build results from all routes.
      * @param results
      * @param routes
      * @param totalCost

@@ -19,6 +19,7 @@ public class FindPathRequest {
     List<TransportTypeEnum> modeOfTransports;
     @NotNull
     Long containerSize;
+    //@TODO from<to validation needed
     Long durationFrom;
     Long durationTo;
     Double costFrom;

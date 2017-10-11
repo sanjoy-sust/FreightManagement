@@ -1,0 +1,12 @@
+{
+  "source": "Gothenburg",
+  "destination": "Orlando",
+  "modeOfTransports": ["Ocean", "Road"],
+  "containerSize": 20,
+  "durationFrom": 250,
+  "durationTo": 0,
+  "costFrom": 20,
+  "costTo": 4000
+}
+
+//Duration from always smaller than duration to. It checked on request time

@@ -22,4 +22,5 @@ build/
 nbbuild/
 dist/
 nbdist/
+classes/
 .nb-gradle/

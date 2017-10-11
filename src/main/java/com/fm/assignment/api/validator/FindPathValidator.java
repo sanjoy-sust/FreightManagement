@@ -45,7 +45,7 @@ public class FindPathValidator implements Validator {
 
         if(findPathRequest.getDestination() == null ||findPathRequest.getDestination() =="")
         {
-            errors.reject("findPath.destination", RequestValidationMessage.SOURCE_NOT_NULL);
+            errors.reject("findPath.destination", RequestValidationMessage.DESTINATION_NOT_NULL);
         }
 
         if(findPathRequest.getModeOfTransports() == null ||findPathRequest.getModeOfTransports().size() == 0)

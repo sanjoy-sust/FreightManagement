@@ -8,6 +8,12 @@ import java.net.URLEncoder;
  * @since 10/10/2017.
  */
 public class ApiUrlBuilder {
+    /**
+     * Build google map api url with address
+     * @param address
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     public static String buildGoogleMapApiUrl(String address) throws UnsupportedEncodingException {
             return ApiConstants.GOOGLE_MAP_URL
                     .concat(ApiConstants.GOOGLE_MAP_ADDRESS_PREFIX_URL)

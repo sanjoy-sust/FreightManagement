@@ -11,7 +11,7 @@ This is a project to find all paths and cost between two locations.
 * Mysql database  
 * Tomcat Web Server  
 
-To run this project you have to follow below steps:
+**To run this project you have to follow below steps:**
 
 1. Setup you favourite java IDE which can run Spring based projects.  
 2. Setup mysql server. Skip if you have already.  

@@ -12,7 +12,7 @@ public class ErrorCodes {
         String PATH_FIND = "Path Find";
         String PATH_ADD = "Path Add";
         String PLACE_ADD = "Path Add";
-        String UNKNOWN = "Unkown";
+        String UNKNOWN = "Unknown";
     }
 
     public interface CODE{

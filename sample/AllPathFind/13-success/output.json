@@ -1,0 +1,17 @@
+{
+  "results": [
+    {
+      "route": [
+        {
+          "from": "Cox's Bazar",
+          "to": "Chittagong",
+          "transportType": "Road",
+          "cost": 50,
+          "duration": 1
+        }
+      ],
+      "totalCost": 50,
+      "totalDuration": 1
+    }
+  ]
+}

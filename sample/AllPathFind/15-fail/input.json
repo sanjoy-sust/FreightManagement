@@ -1,0 +1,10 @@
+{
+  "source": "Cox's Bazar",
+  "destination": "Chitagong",
+  "modeOfTransports": ["Ocean", "Road"],
+  "containerSize": 20,
+  "durationFrom": 0,
+  "durationTo": 300,
+  "costFrom": 20000,
+  "costTo": 4000
+}

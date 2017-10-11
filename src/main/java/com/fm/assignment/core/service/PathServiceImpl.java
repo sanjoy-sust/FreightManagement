@@ -133,6 +133,9 @@ public class PathServiceImpl implements PathService {
      * then get nearest location
      * Here I use google map api to find latitude and longitude for which destination searched for.
      * Then find nearest locations available within 50KM from our predefined location.
+     *
+     * @TODO if nearest location not match then next nearest location to be calculated.
+     * @TODO if two nearesr location find with same distance then both will pick.
      * @param request
      * @return
      * @throws Exception

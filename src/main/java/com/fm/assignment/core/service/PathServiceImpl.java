@@ -170,6 +170,7 @@ public class PathServiceImpl implements PathService {
 
     /**
      * This method used to find all paths from DB Using transportationMode and container size.
+     * @TODO here we can use factory pattern. I will implent it in future
      * @param request
      * @param sourceCode
      * @param destinationCode
@@ -305,6 +306,7 @@ public class PathServiceImpl implements PathService {
     }
 
     /**
+     * Build route from Path which path get from DB
      * Build route response.
      * @param entity
      * @return

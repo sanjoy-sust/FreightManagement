@@ -2,6 +2,9 @@ package com.fm.assignment.errorhandler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * This is Exception Handler Class. This will resolve all exceptions.
@@ -54,7 +58,7 @@ public class ApplicationExceptionHandler {
         log.error("Generic Exception ", exp);
         ErrorResponse response = getErrorResponse(ErrorCodes.CODE.METHOD_ARG_NOT_VALID,
                 ErrorCodes.Feature.UNKNOWN,
-                ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.METHOD_ARG_NOT_VALID));
+                getErrorMessage(exp.getBindingResult()));
         return response;
     }
 
@@ -67,6 +71,21 @@ public class ApplicationExceptionHandler {
                 ErrorCodes.Feature.UNKNOWN,
                 ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.GENERIC_ERROR));
         return response;
+    }
+
+    public static String getErrorMessage(BindingResult bindingResult){
+        StringBuilder message = new StringBuilder();
+
+        List<ObjectError> objectErrors = bindingResult.getGlobalErrors();
+        for (ObjectError objectError : objectErrors) {
+            message.append(objectError.getObjectName())
+                    .append(" : ")
+                    .append(" [")
+                    .append(objectError.getDefaultMessage())
+                    .append("] ");
+        }
+
+        return message.toString();
     }
 
 

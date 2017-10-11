@@ -11,15 +11,10 @@ import java.util.List;
  */
 @Data
 public class FindPathRequest {
-    @NotNull
     String source;
-    @NotNull
     String destination;
-    @NotNull
     List<TransportTypeEnum> modeOfTransports;
-    @NotNull
     Long containerSize;
-    //@TODO from<to validation needed
     Long durationFrom;
     Long durationTo;
     Double costFrom;

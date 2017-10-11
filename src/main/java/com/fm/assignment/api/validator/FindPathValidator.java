@@ -33,5 +33,24 @@ public class FindPathValidator implements Validator {
             }
         }
 
+        if(findPathRequest.getContainerSize() == null ||findPathRequest.getContainerSize() ==0)
+        {
+            errors.reject("findPath.containerSize", RequestValidationMessage.CONTAINER_SIZE_NOT_NULL);
+        }
+
+        if(findPathRequest.getSource() == null ||findPathRequest.getSource() =="")
+        {
+            errors.reject("findPath.source", RequestValidationMessage.SOURCE_NOT_NULL);
+        }
+
+        if(findPathRequest.getDestination() == null ||findPathRequest.getDestination() =="")
+        {
+            errors.reject("findPath.destination", RequestValidationMessage.SOURCE_NOT_NULL);
+        }
+
+        if(findPathRequest.getModeOfTransports() == null ||findPathRequest.getModeOfTransports().size() == 0)
+        {
+            errors.reject("findPath.modeOfTransport", RequestValidationMessage.TRANSPORT_NOT_NULL);
+        }
     }
 }

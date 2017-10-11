@@ -22,11 +22,11 @@ import java.util.List;
 @RequestMapping(value = "path")
 public class PathController {
 
- /*   @InitBinder
+    @InitBinder
     protected void initBinder(WebDataBinder webDataBinder)
     {
         webDataBinder.setValidator(new FindPathValidator());
-    }*/
+    }
 
     @Autowired
     private PathService pathService;

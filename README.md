@@ -35,7 +35,7 @@ This is a project to find all paths and cost between two locations.
     c) Project setup almost done.  
      
  7. Open command promt. Goto project directory.  
- 8. Run following command "**gradle clean build -x test**"  
+ 8. Run following command "**gradle clean build -x test**" . Because test code is not ready yet.  
  9. If clean build success then run "**gradle bootrun**".   
  10. I think thats all to setup project.  
     

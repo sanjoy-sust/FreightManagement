@@ -1,4 +1,4 @@
-INSERT INTO `place`
+INSERT INTO `freight_management`.`place`
 VALUES (1, 'Stockholm', 'STKHM', NULL, 18.069915, 59.347553, 'ADMIN', NULL, '2017-10-10 16:46:24', NULL),
   (2, 'Gothenburg', 'GTB', NULL, 11.974831, 57.72929, 'ADMIN', NULL, '2017-10-10 16:47:31', NULL),
   (3, 'Ft. Lauderdale', 'FLD', NULL, -80.134927, 26.127534, 'ADMIN', NULL, '2017-10-10 16:49:18', NULL),
@@ -12,7 +12,7 @@ VALUES (1, 'Stockholm', 'STKHM', NULL, 18.069915, 59.347553, 'ADMIN', NULL, '201
   (11, 'Comilla', 'CML', NULL, 91.188435, 23.46232, 'ADMIN', NULL, '2017-10-10 17:14:48', NULL);
 
 
-INSERT INTO `path` VALUES (1, 'STKHM', 'GTB', 20, 420, 'Road', 1, 'ADMIN', NULL, '2017-10-10 17:29:26', NULL),
+INSERT INTO `freight_management`.`path` VALUES (1, 'STKHM', 'GTB', 20, 420, 'Road', 1, 'ADMIN', NULL, '2017-10-10 17:29:26', NULL),
   (2, 'STKHM', 'GTB', 40, 430, 'Road', 1, 'ADMIN', NULL, '2017-10-10 17:30:16', NULL),
   (23, 'GTB', 'FLD', 20, 1623, 'Ocean', 22, 'ADMIN', NULL, '2017-10-10 18:45:47', NULL),
   (24, 'GTB', 'FLD', 40, 2500, 'Ocean', 22, 'ADMIN', NULL, '2017-10-10 18:46:28', NULL),

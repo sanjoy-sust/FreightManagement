@@ -14,6 +14,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @Configuration
 public class AppConfig {
+    /**
+     * This bean is used to allow Quited fields as field data.
+     * Ex. : Cox's Bazar as place name. without this bean it will get exception.
+     * @return
+     */
     @Bean
     ObjectMapper getObjectMapper()
     {

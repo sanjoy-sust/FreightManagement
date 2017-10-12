@@ -1,5 +1,5 @@
 # ## Freight Management
-Sample Spring boot project.
+Simple Spring boot project.
 
 This is a project to find all paths and cost between two locations.
 

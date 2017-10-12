@@ -77,23 +77,6 @@ public class PathServiceImpl implements PathService {
     }
 
     /**
-     * This will check Source and Destination is valid or not
-     * @param placeEntityFrom
-     * @param placeEntityTo
-     * @throws ResourceNotFoundException
-     */
-    private void isPlaceNull(PlaceEntity placeEntityFrom, PlaceEntity placeEntityTo) throws ResourceNotFoundException {
-        if (placeEntityFrom == null) {
-            throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
-                    ErrorCodes.CODE.SOURCE_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.SOURCE_NOT_FOUND));
-        }
-        if (placeEntityTo == null) {
-            throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
-                    ErrorCodes.CODE.DESTINATION_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
-        }
-    }
-
-    /**
      * This method will use to add all possible path from source to destination.
      * If destination not found then use nearest point to find Path from source to destination.
      * @TODO need to introduce a layer like params layer. for example FindPathParam instead of FindPathRequest.
@@ -124,7 +107,7 @@ public class PathServiceImpl implements PathService {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.PATH_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PATH_NOT_FOUND));
         }
-        FindPathResponse response = buildResponse(allPaths, request);
+        FindPathResponse response = buildFindPathResponse(allPaths, request);
         return response;
     }
 
@@ -149,7 +132,8 @@ public class PathServiceImpl implements PathService {
         if(allNearestPlaces.size() ==0)
         {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
-                    ErrorCodes.CODE.DESTINATION_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
+                    ErrorCodes.CODE.DESTINATION_NOT_FOUND,
+                    ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
         }
 
         double minimumDistance = Constants.MINIMUM_DISTANCE_TO_NEAR_LOCATION;
@@ -173,7 +157,7 @@ public class PathServiceImpl implements PathService {
 
     /**
      * This method used to find all paths from DB Using transportationMode and container size.
-     * @TODO here we can use factory pattern. I will implent it in future
+     * @TODO here we can use factory pattern. I will implement it in future
      * @param request
      * @param sourceCode
      * @param destinationCode
@@ -235,7 +219,7 @@ public class PathServiceImpl implements PathService {
      * @return
      * @throws ResourceNotFoundException
      */
-    private FindPathResponse buildResponse(List<List<PathEntity>> allPaths, FindPathRequest request) throws ResourceNotFoundException {
+    private FindPathResponse buildFindPathResponse(List<List<PathEntity>> allPaths, FindPathRequest request) throws ResourceNotFoundException {
         FindPathResponse response = new FindPathResponse();
         List<Results> results = new ArrayList<>();
 
@@ -327,5 +311,22 @@ public class PathServiceImpl implements PathService {
         route.setTransportType(entity.getRouteType());
         route.setDuration(entity.getDuration());
         return route;
+    }
+
+    /**
+     * This will check Source and Destination is valid or not
+     * @param placeEntityFrom
+     * @param placeEntityTo
+     * @throws ResourceNotFoundException
+     */
+    private void isPlaceNull(PlaceEntity placeEntityFrom, PlaceEntity placeEntityTo) throws ResourceNotFoundException {
+        if (placeEntityFrom == null) {
+            throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
+                    ErrorCodes.CODE.SOURCE_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.SOURCE_NOT_FOUND));
+        }
+        if (placeEntityTo == null) {
+            throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
+                    ErrorCodes.CODE.DESTINATION_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
+        }
     }
 }

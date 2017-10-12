@@ -40,7 +40,7 @@ This is a project to find all paths and cost between two locations.
  10. I think thats all to setup project.  
     
 
-For more details Please check following URL:
+For more details Please check following URLs:
 
 1. https://github.com/sanjoy-sust/FreightManagement/wiki/1.-Installation-guide  
 2. https://github.com/sanjoy-sust/FreightManagement/wiki/2.-Description-and-Improvement-Item  

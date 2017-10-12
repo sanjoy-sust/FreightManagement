@@ -15,15 +15,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
+/** This service is used to add Locations to location table
  * @author Sanjoy Kumer Deb
  * @since 07/10/2017.
  */
 @Service
 public class PlaceServiceImpl implements PlaceService {
+
     @Autowired
     private PlaceRepository placeRepository;
-    final GeometryFactory gf = new GeometryFactory();
 
     @Override
     public Long addPlace(PlaceResource resource) throws DatabaseException {

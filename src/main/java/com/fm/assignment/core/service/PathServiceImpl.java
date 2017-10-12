@@ -5,6 +5,7 @@ import com.fm.assignment.core.entity.PathEntity;
 import com.fm.assignment.core.dao.PlaceRepository;
 import com.fm.assignment.core.entity.PlaceEntity;
 import com.fm.assignment.core.enums.TransportTypeEnum;
+import com.fm.assignment.core.params.PlaceParam;
 import com.fm.assignment.errorhandler.RemoteApiException;
 import com.fm.assignment.remote.LatLongService;
 import com.fm.assignment.remote.LatLongModel;
@@ -125,7 +126,7 @@ public class PathServiceImpl implements PathService {
      */
     private String findNearestLocationAsDestination(FindPathRequest request) throws RemoteApiException, ResourceNotFoundException {
         String destinationCode;LatLongModel latLongModel = latLongService.getLatLongPositions(request.getDestination());
-        List<PlaceEntity> allNearestPlaces = placeService.getAllNearestPlaces(
+        List<PlaceParam> allNearestPlaces = placeService.getAllNearestPlaces(
                 latLongModel.getLatitude(),
                 latLongModel.getLongitude(),
                 Constants.MINIMUM_DISTANCE_TO_NEAR_LOCATION);
@@ -137,10 +138,10 @@ public class PathServiceImpl implements PathService {
         }
 
         double minimumDistance = Constants.MINIMUM_DISTANCE_TO_NEAR_LOCATION;
-        PlaceEntity targetPlace = null;
-        for (PlaceEntity placeEntity : allNearestPlaces) {
-            double lat2 = placeEntity.getLatitude();
-            double lang2 = placeEntity.getLongitude();
+        PlaceParam targetPlace = null;
+        for (PlaceParam placeParam : allNearestPlaces) {
+            double lat2 = placeParam.getLatitude();
+            double lang2 = placeParam.getLongitude();
             Double distance = latLongService.distance(
                     latLongModel.getLatitude(),
                     latLongModel.getLongitude(),
@@ -148,7 +149,7 @@ public class PathServiceImpl implements PathService {
                     lang2);
             if (distance < minimumDistance) {
                 minimumDistance = distance;
-                targetPlace = placeEntity;
+                targetPlace = placeParam;
             }
         }
         destinationCode = targetPlace.getCode();

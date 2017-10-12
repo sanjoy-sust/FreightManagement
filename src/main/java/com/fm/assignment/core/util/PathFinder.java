@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
+ * This class use to build total graph which determines a directed graph
+ * from one node to another.
  * @author Sanjoy Kumer Deb
  * @since 10/10/2017.
  */
@@ -30,7 +32,7 @@ public class PathFinder {
             pathList.add(pathEntity);
         }
         if (current.equals(destination)) {
-            routes.add(new ArrayList<PathEntity>(pathList));
+            routes.add(new ArrayList<>(pathList));
             pathList.remove(pathEntity);
             path.remove(current);
             return;

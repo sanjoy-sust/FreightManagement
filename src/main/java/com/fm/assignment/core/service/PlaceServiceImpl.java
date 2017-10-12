@@ -3,6 +3,8 @@ package com.fm.assignment.core.service;
 import com.fm.assignment.core.entity.PlaceEntity;
 import com.fm.assignment.api.model.PlaceResource;
 import com.fm.assignment.core.dao.PlaceRepository;
+import com.fm.assignment.core.params.PlaceParam;
+import com.fm.assignment.core.util.ParamAndEntityBuilder;
 import com.fm.assignment.errorhandler.DatabaseException;
 import com.fm.assignment.errorhandler.ErrorCodes;
 import com.vividsolutions.jts.awt.PointShapeFactory;
@@ -13,6 +15,7 @@ import com.vividsolutions.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** This service is used to add Locations to location table
@@ -26,12 +29,12 @@ public class PlaceServiceImpl implements PlaceService {
     private PlaceRepository placeRepository;
 
     @Override
-    public Long addPlace(PlaceResource resource) throws DatabaseException {
+    public Long addPlace(PlaceParam placeParam) throws DatabaseException {
         PlaceEntity entity = new PlaceEntity();
-        entity.setCode(resource.getCode());
-        entity.setName(resource.getName());
-        entity.setLongitude(resource.getLongitude());
-        entity.setLatitude(resource.getLatitude());
+        entity.setCode(placeParam.getCode());
+        entity.setName(placeParam.getName());
+        entity.setLongitude(placeParam.getLongitude());
+        entity.setLatitude(placeParam.getLatitude());
         PlaceEntity savedPlaceEntity;
         try {
             savedPlaceEntity = placeRepository.save(entity);
@@ -48,8 +51,13 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public List<PlaceEntity> getAllNearestPlaces(Double latitude,Double longitude,Double distance) {
-        List<PlaceEntity> locationWithin = placeRepository.findLocationWithin(latitude,longitude,distance);
-        return locationWithin;
+    public List<PlaceParam> getAllNearestPlaces(Double latitude,Double longitude,Double distance) {
+        List<PlaceParam> locationWithinParams = new ArrayList<>();
+        List<PlaceEntity> locationsWithinDistance = placeRepository.findLocationWithin(latitude,longitude,distance);
+        for (PlaceEntity entity :locationsWithinDistance)
+        {
+            locationWithinParams.add(ParamAndEntityBuilder.buildPlaceParam(entity));
+        }
+        return locationWithinParams;
     }
 }

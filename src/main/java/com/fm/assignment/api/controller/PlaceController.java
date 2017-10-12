@@ -1,11 +1,10 @@
 package com.fm.assignment.api.controller;
 
-import com.fm.assignment.api.model.PathResource;
 import com.fm.assignment.api.model.PlaceResource;
-import com.fm.assignment.core.entity.PlaceEntity;
+import com.fm.assignment.core.params.PlaceParam;
 import com.fm.assignment.core.service.PlaceService;
 import com.fm.assignment.errorhandler.DatabaseException;
-import com.vividsolutions.jts.geom.Geometry;
+import com.fm.assignment.util.RequestAndParamBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,8 @@ public class PlaceController {
     @PostMapping
     public long addPlace(@RequestBody PlaceResource resource) throws DatabaseException {
         log.info("add place request");
-        return placeService.addPlace(resource);
+        PlaceParam placeParam = RequestAndParamBuilder.buildPlaceParam(resource);
+        return placeService.addPlace(placeParam);
     }
     @GetMapping
     public List<PlaceResource> getAll()

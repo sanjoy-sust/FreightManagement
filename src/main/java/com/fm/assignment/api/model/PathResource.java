@@ -6,7 +6,8 @@ import lombok.Data;
 import javax.persistence.*;
 
 /**
- * Created by Lenovo on 07/10/2017.
+ * @author Sanjoy Kumer Deb
+ * @since 06/10/2017.
  */
 @Data
 public class PathResource {

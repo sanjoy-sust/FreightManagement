@@ -8,7 +8,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 /**
- * Created by Lenovo on 06/10/2017.
+ * @author Sanjoy Kumer Deb
+ * @since 06/10/2017.
  */
 @Data
 public class RouteResponse {

@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 public class AppConfig {
     /**
-     * This bean is used to allow Quoted fields as field data.
+     * This bean is customised to allow Quoted fields as field data.
      * Ex. : Cox's Bazar as place name. without this bean it will get exception.
      * @return
      */

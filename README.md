@@ -13,7 +13,7 @@ This is a project to find all paths and cost between two locations.
 
 **To run this project you have to follow below steps:**
 
-1. Setup you favourite java IDE which can run Spring based projects.  
+1. Setup your favourite java IDE which can run Spring based projects.  
 2. Setup mysql server. Skip if you have already.  
 3. Setup gradle. Skip if you have already.  
 4. Download or clone this project.  

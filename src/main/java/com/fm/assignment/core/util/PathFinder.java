@@ -36,12 +36,12 @@ public class PathFinder {
             return;
         }
 
-        Map<String, PathEntity> stringPathEntityMap = graphBuilder.pathFrom(current);
-        final Set<String> paths = stringPathEntityMap.keySet();
+        Map<String, PathEntity> nodesFromCurrentNode = graphBuilder.pathFrom(current);
+        final Set<String> paths = nodesFromCurrentNode.keySet();
 
         for (String t : paths) {
             if (!path.contains(t)) {
-                recursive(t, destination, routes, path, stringPathEntityMap.get(t), pathList);
+                recursive(t, destination, routes, path, nodesFromCurrentNode.get(t), pathList);
             }
         }
         path.remove(current);

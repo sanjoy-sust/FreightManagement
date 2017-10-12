@@ -76,7 +76,14 @@ public class LatLongServiceImpl implements LatLongService {
         return latLongModel;
     }
 
-
+    /**
+     * To calculate distance between two latitude and longitude.
+     * @param lat1
+     * @param lon1
+     * @param lat2
+     * @param lon2
+     * @return
+     */
     @Override
     public double distance(double lat1, double lon1, double lat2, double lon2) {
         double theta = lon1 - lon2;

@@ -1,7 +1,5 @@
 {
-  "feature": "Path Find",
-  "code": "ERR-233",
-  "message": "Please check Cost or Duration Range. Path not found for request."
+  "feature": "Unknown",
+  "code": "ERR-990",
+  "message": "findPathRequest :  [Duration from must be smaller than duration to] "
 }
-
-//This will resolved in controller layer.

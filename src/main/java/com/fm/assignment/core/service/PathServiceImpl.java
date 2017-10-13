@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * This class use for path related task.
@@ -91,18 +92,24 @@ public class PathServiceImpl implements PathService {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.SOURCE_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.SOURCE_NOT_FOUND));
         }
-        /*If destination not found then find near location for destination within 50KM.*/
-        if (destinationCode == null) {
-            destinationCode = findNearestLocationAsDestination(param);
+
+        List<List<PathEntity>> allPaths = new ArrayList<>();
+        if(destinationCode != null)
+        {
+            /*Find All posible path from source to destination*/
+            allPaths = getPaths(param, sourceCode, destinationCode);
         }
-        /*If still destination not found within 50KM then send error*/
-        if (destinationCode == null) {
-            throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
-                    ErrorCodes.CODE.DESTINATION_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
+        /*If destination not found then find near location for destination within 50KM.*/
+        else if (destinationCode == null) {
+            List<PlaceParam> derivedLocationAsDestination = findDerivedLocationAsDestination(param);
+            for (PlaceParam placeParam: derivedLocationAsDestination)
+            {
+                List<List<PathEntity>> paths = getPaths(param, sourceCode, placeParam.getCode());
+                allPaths.addAll(paths);
+            }
         }
 
-        /*Find All posible path from source to destination*/
-        List<List<PathEntity>> allPaths = getPaths(param, sourceCode, destinationCode);
+
         if (allPaths == null || allPaths.size() == 0 ) {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.PATH_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PATH_NOT_FOUND));
@@ -125,36 +132,19 @@ public class PathServiceImpl implements PathService {
      * @return
      * @throws Exception
      */
-    private String findNearestLocationAsDestination(FindPathParam param) throws RemoteApiException, ResourceNotFoundException {
-        String destinationCode;LatLongModel latLongModel = latLongService.getLatLongPositions(param.getDestination());
-        List<PlaceParam> allNearestPlaces = placeService.getAllNearestPlaces(
+    private List<PlaceParam> findDerivedLocationAsDestination(FindPathParam param) throws RemoteApiException, ResourceNotFoundException {
+        LatLongModel latLongModel = latLongService.getLatLongPositions(param.getDestination());
+        List<PlaceParam> allDerivedLocations = placeService.getAllNearestPlaces(
                 latLongModel.getLatitude(),
                 latLongModel.getLongitude(),
                 Constants.MINIMUM_DISTANCE_TO_NEAR_LOCATION);
-        if(allNearestPlaces.size() ==0)
+        if(allDerivedLocations.size() ==0)
         {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.DESTINATION_NOT_FOUND,
                     ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
         }
-
-        double minimumDistance = Constants.MINIMUM_DISTANCE_TO_NEAR_LOCATION;
-        PlaceParam targetPlace = null;
-        for (PlaceParam placeParam : allNearestPlaces) {
-            double nearestPlaceLatitude = placeParam.getLatitude();
-            double nearestPlaceLongitude = placeParam.getLongitude();
-            Double distance = latLongService.distance(
-                    latLongModel.getLatitude(),
-                    latLongModel.getLongitude(),
-                    nearestPlaceLatitude,
-                    nearestPlaceLongitude);
-            if (distance < minimumDistance) {
-                minimumDistance = distance;
-                targetPlace = placeParam;
-            }
-        }
-        destinationCode = targetPlace.getCode();
-        return destinationCode;
+        return allDerivedLocations;
     }
 
     /**

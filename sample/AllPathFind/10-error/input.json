@@ -5,6 +5,6 @@
   "containerSize": 20,
   "durationFrom": 20,
   "durationTo": 250,
-  "costFrom": 3000,/*cost not match*/
+  "costFrom": 3000,
   "costTo": 4000
 }

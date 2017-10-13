@@ -10,5 +10,5 @@ import java.util.List;
  */
 @Data
 public class FindPathResponse {
-    private List<Results> results;
+    private List<ResultsResource> results;
 }

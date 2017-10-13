@@ -5,14 +5,18 @@ import com.fm.assignment.core.entity.PathEntity;
 import com.fm.assignment.core.dao.PlaceRepository;
 import com.fm.assignment.core.entity.PlaceEntity;
 import com.fm.assignment.core.enums.TransportTypeEnum;
+import com.fm.assignment.core.params.FindPathParam;
+import com.fm.assignment.core.params.PathParam;
 import com.fm.assignment.core.params.PlaceParam;
+import com.fm.assignment.core.params.ResultParam;
+import com.fm.assignment.core.util.ParamAndEntityBuilder;
+import com.fm.assignment.core.validator.FindPathValidator;
 import com.fm.assignment.errorhandler.RemoteApiException;
 import com.fm.assignment.remote.LatLongService;
 import com.fm.assignment.remote.LatLongModel;
 import com.fm.assignment.errorhandler.DatabaseException;
 import com.fm.assignment.errorhandler.ErrorCodes;
 import com.fm.assignment.errorhandler.ResourceNotFoundException;
-import com.fm.assignment.api.model.*;
 import com.fm.assignment.core.util.GraphBuilder;
 import com.fm.assignment.core.util.PathFinder;
 import com.fm.assignment.util.Constants;
@@ -43,29 +47,20 @@ public class PathServiceImpl implements PathService {
     @Autowired
     private LatLongService latLongService;
 
+    @Autowired
+    private ParamAndEntityBuilder paramAndEntityBuilder;
+
     /**
      * This will use to add path to path table.
-     * @param pathResource
+     * @param pathParam
      * @return
      * @throws ResourceNotFoundException
      * @throws DatabaseException
      */
     @Override
-    public long addPath(PathResource pathResource) throws ResourceNotFoundException, DatabaseException {
-        log.info("Adding Path : {}",pathResource);
-        PathEntity pathEntity = new PathEntity();
-        pathEntity.setRouteType(pathResource.getRouteType());
-        pathEntity.setContainerSize(pathResource.getContainerSize());
-        pathEntity.setCost(pathResource.getCost());
-        pathEntity.setDuration(pathResource.getDuration());
-        PlaceEntity placeEntityFrom;
-        PlaceEntity placeEntityTo;
-
-        placeEntityFrom = placeRepository.findByName(pathResource.getFrom());
-        placeEntityTo = placeRepository.findByName(pathResource.getTo());
-        isPlaceNull(placeEntityFrom, placeEntityTo);
-        pathEntity.setFromCode(placeEntityFrom);
-        pathEntity.setToCode(placeEntityTo);
+    public long addPath(PathParam pathParam) throws ResourceNotFoundException, DatabaseException {
+        log.info("Adding Path : {}", pathParam);
+        PathEntity pathEntity = paramAndEntityBuilder.buildPathEntity(pathParam);
         PathEntity savedEntity;
         try {
             savedEntity = pathRepository.save(pathEntity);
@@ -82,34 +77,40 @@ public class PathServiceImpl implements PathService {
      * If destination not found then use nearest point to find Path from source to destination.
      * @TODO need to introduce a layer like params layer. for example FindPathParam instead of FindPathRequest.
      * Its not recommended to use request object to service layer.
-     * @param request
+     * @param param
      * @return
      * @throws ResourceNotFoundException
      */
     @Override
-    public FindPathResponse getAllPaths(FindPathRequest request) throws ResourceNotFoundException, RemoteApiException {
-        PlaceEntity sourceObj = placeRepository.findByName(request.getSource());
-        PlaceEntity destinationObj = placeRepository.findByName(request.getDestination());
+    public List<ResultParam> getAllPaths(FindPathParam param) throws ResourceNotFoundException, RemoteApiException {
+        PlaceEntity sourceObj = placeRepository.findByName(param.getSource());
+        PlaceEntity destinationObj = placeRepository.findByName(param.getDestination());
         String sourceCode = sourceObj == null ? null : sourceObj.getCode();
         String destinationCode = destinationObj == null ? null : destinationObj.getCode();
         if (sourceCode == null) {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.SOURCE_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.SOURCE_NOT_FOUND));
         }
+        /*If destination not found then find near location for destination within 50KM.*/
         if (destinationCode == null) {
-            destinationCode = findNearestLocationAsDestination(request);
+            destinationCode = findNearestLocationAsDestination(param);
         }
+        /*If still destination not found within 50KM then send error*/
         if (destinationCode == null) {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.DESTINATION_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
         }
-        List<List<PathEntity>> allPaths = getPaths(request, sourceCode, destinationCode);
+
+        /*Find All posible path from source to destination*/
+        List<List<PathEntity>> allPaths = getPaths(param, sourceCode, destinationCode);
         if (allPaths == null || allPaths.size() == 0 ) {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.PATH_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PATH_NOT_FOUND));
         }
-        FindPathResponse response = buildFindPathResponse(allPaths, request);
-        return response;
+
+        /**/
+        List<ResultParam> resultsResources = calculateTotalCostAndDurationOfRoutes(allPaths, param);
+        return resultsResources;
     }
 
     /**
@@ -119,13 +120,13 @@ public class PathServiceImpl implements PathService {
      * Then find nearest locations available within 50KM from our predefined location.
      *
      * @TODO if nearest location not match then next nearest location to be calculated.
-     * @TODO if two nearesr location find with same distance then both will pick.
-     * @param request
+     * @TODO if two nearest location find with same distance then both will pick.
+     * @param param
      * @return
      * @throws Exception
      */
-    private String findNearestLocationAsDestination(FindPathRequest request) throws RemoteApiException, ResourceNotFoundException {
-        String destinationCode;LatLongModel latLongModel = latLongService.getLatLongPositions(request.getDestination());
+    private String findNearestLocationAsDestination(FindPathParam param) throws RemoteApiException, ResourceNotFoundException {
+        String destinationCode;LatLongModel latLongModel = latLongService.getLatLongPositions(param.getDestination());
         List<PlaceParam> allNearestPlaces = placeService.getAllNearestPlaces(
                 latLongModel.getLatitude(),
                 latLongModel.getLongitude(),
@@ -140,13 +141,13 @@ public class PathServiceImpl implements PathService {
         double minimumDistance = Constants.MINIMUM_DISTANCE_TO_NEAR_LOCATION;
         PlaceParam targetPlace = null;
         for (PlaceParam placeParam : allNearestPlaces) {
-            double lat2 = placeParam.getLatitude();
-            double lang2 = placeParam.getLongitude();
+            double nearestPlaceLatitude = placeParam.getLatitude();
+            double nearestPlaceLongitude = placeParam.getLongitude();
             Double distance = latLongService.distance(
                     latLongModel.getLatitude(),
                     latLongModel.getLongitude(),
-                    lat2,
-                    lang2);
+                    nearestPlaceLatitude,
+                    nearestPlaceLongitude);
             if (distance < minimumDistance) {
                 minimumDistance = distance;
                 targetPlace = placeParam;
@@ -159,36 +160,37 @@ public class PathServiceImpl implements PathService {
     /**
      * This method used to find all paths from DB Using transportationMode and container size.
      * @TODO here we can use factory pattern. I will implement it in future
-     * @param request
+     * @param param
      * @param sourceCode
      * @param destinationCode
      * @return
      * @throws ResourceNotFoundException
      */
-    private List<List<PathEntity>> getPaths(FindPathRequest request, String sourceCode, String destinationCode) throws ResourceNotFoundException {
+    private List<List<PathEntity>> getPaths(FindPathParam param, String sourceCode, String destinationCode) throws ResourceNotFoundException {
         GraphBuilder paths = new GraphBuilder();
         List<PathEntity> pathEntityList = new ArrayList<>();
-        for (TransportTypeEnum transportTypeEnum : request.getModeOfTransports()) {
+        for (TransportTypeEnum transportTypeEnum : param.getModeOfTransports()) {
             switch (transportTypeEnum) {
                 case All:
-                    pathEntityList.addAll(pathRepository.findByContainerSize(request.getContainerSize()));
-                    buildPath(paths, pathEntityList);
+                    pathEntityList.addAll(pathRepository.findByContainerSize(param.getContainerSize()));
+                    buildGraph(paths, pathEntityList);
                     break;
                 case Road:
-                    pathEntityList.addAll(pathRepository.findByRouteTypeAndContainerSize(TransportTypeEnum.Road, request.getContainerSize()));
-                    buildPath(paths, pathEntityList);
+                    pathEntityList.addAll(pathRepository.findByRouteTypeAndContainerSize(TransportTypeEnum.Road, param.getContainerSize()));
+                    buildGraph(paths, pathEntityList);
                     break;
                 case Ocean:
-                    pathEntityList.addAll(pathRepository.findByRouteTypeAndContainerSize(TransportTypeEnum.Ocean, request.getContainerSize()));
-                    buildPath(paths, pathEntityList);
+                    pathEntityList.addAll(pathRepository.findByRouteTypeAndContainerSize(TransportTypeEnum.Ocean, param.getContainerSize()));
+                    buildGraph(paths, pathEntityList);
                     break;
                 case Air:
-                    pathEntityList.addAll(pathRepository.findByRouteTypeAndContainerSize(TransportTypeEnum.Air, request.getContainerSize()));
-                    buildPath(paths, pathEntityList);
+                    pathEntityList.addAll(pathRepository.findByRouteTypeAndContainerSize(TransportTypeEnum.Air, param.getContainerSize()));
+                    buildGraph(paths, pathEntityList);
                     break;
             }
 
         }
+        /*If pathEntityList size is zero that means its contain no path for requested routType and containerSize*/
         if (pathEntityList.size() <= 0) {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.ROUTE_TYPE_OR_CONTAINER_NOT_MATCHED, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.ROUTE_TYPE_OR_CONTAINER_NOT_MATCHED));
@@ -198,14 +200,14 @@ public class PathServiceImpl implements PathService {
     }
 
     /**
-     * @param paths
+     * @param paths //pass to build graph for different combination of routes
      * @param pathEntityList
      */
-    private void buildPath(GraphBuilder paths, List<PathEntity> pathEntityList) throws ResourceNotFoundException {
+    private void buildGraph(GraphBuilder paths, List<PathEntity> pathEntityList) throws ResourceNotFoundException {
         for (PathEntity entity : pathEntityList) {
             PlaceEntity fromPlace = entity.getFromCode();
             PlaceEntity toPlace = entity.getToCode();
-            isPlaceNull(fromPlace, toPlace);
+            FindPathValidator.isPlaceNull(fromPlace, toPlace);
             paths.addLocation(fromPlace.getCode());
             paths.addLocation(toPlace.getCode());
             paths.addPath(entity.getFromCode().getCode(), entity.getToCode().getCode(), entity);
@@ -213,121 +215,32 @@ public class PathServiceImpl implements PathService {
     }
 
     /**
-     * @TODO Its not recommened to build response in service layer. I will convert corresponding response to DTO
-     * @TODO and build response in controller
      * @param allPaths
-     * @param request
+     * @param param
      * @return
      * @throws ResourceNotFoundException
      */
-    private FindPathResponse buildFindPathResponse(List<List<PathEntity>> allPaths, FindPathRequest request) throws ResourceNotFoundException {
-        FindPathResponse response = new FindPathResponse();
-        List<Results> results = new ArrayList<>();
+    private List<ResultParam> calculateTotalCostAndDurationOfRoutes(List<List<PathEntity>> allPaths, FindPathParam param) throws ResourceNotFoundException {
+        List<ResultParam> results = new ArrayList<>();
 
         for (List<PathEntity> pathEntityList : allPaths) {
-            List<RouteResponse> routes = new ArrayList<>();
+            List<PathParam> routes = new ArrayList<>();
             Double totalCost = 0.0;
             Long totalDuration = 0L;
             for (PathEntity entity : pathEntityList) {
-                RouteResponse route = getRouteResponse(entity);
+                PathParam route = paramAndEntityBuilder.buildPathParam(entity);
                 routes.add(route);
                 totalCost += entity.getCost();
                 totalDuration += entity.getDuration();
             }
-            filterPaths(request, results, routes, totalCost, totalDuration);
+            /*Filter path against cost/duration range*/
+            FindPathValidator.filterPaths(param, results, routes, totalCost, totalDuration);
 
         }
         if (results.size() == 0) {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.COST_DURATION_NOT_MATCHED, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.COST_DURATION_NOT_MATCHED));
         }
-        response.setResults(results);
-        return response;
-    }
-
-    /**
-     * Filter path for cost limitation and duration limitation
-     * Both fields are optional
-     *
-     * @param request
-     * @param results
-     * @param routes
-     * @param totalCost
-     * @param totalDuration
-     */
-    private void filterPaths(FindPathRequest request, List<Results> results, List<RouteResponse> routes, Double totalCost, Long totalDuration) {
-        if ((request.getCostTo() == null && request.getCostFrom() == null)
-                && (request.getDurationTo() == null && request.getDurationFrom() == null)) {
-            buildResult(results, routes, totalCost, totalDuration);
-        } else if ((request.getCostTo() != null && request.getCostFrom() != null)
-                && (request.getDurationTo() == null && request.getDurationFrom() == null)) {
-            if (totalCost >= request.getCostFrom() && totalCost <= request.getCostTo()) {
-                buildResult(results, routes, totalCost, totalDuration);
-            }
-        } else if ((request.getCostTo() == null && request.getCostFrom() == null)
-                && (request.getDurationTo() != null && request.getDurationFrom() != null)) {
-            if (totalDuration >= request.getDurationFrom() && totalDuration <= request.getDurationTo()) {
-                buildResult(results, routes, totalCost, totalDuration);
-            }
-        } else if ((request.getCostTo() != null && request.getCostFrom() != null)
-                && (request.getDurationTo() != null && request.getDurationFrom() != null)) {
-            if (totalDuration >= request.getDurationFrom() && totalDuration <= request.getDurationTo()) {
-                if (totalCost >= request.getCostFrom() && totalCost <= request.getCostTo()) {
-                    buildResult(results, routes, totalCost, totalDuration);
-                }
-            }
-        }
-    }
-
-    /**
-     * Build results from all routes.
-     * @param results
-     * @param routes
-     * @param totalCost
-     * @param totalDuration
-     */
-    private void buildResult(List<Results> results, List<RouteResponse> routes, Double totalCost, Long totalDuration) {
-        Results result = new Results();
-        result.setRoute(routes);
-        result.setTotalCost(totalCost);
-        result.setTotalDuration(totalDuration);
-        results.add(result);
-    }
-
-    /**
-     * Build route from Path which path get from DB
-     * Build route response.
-     * @param entity
-     * @return
-     */
-    private RouteResponse getRouteResponse(PathEntity entity) throws ResourceNotFoundException {
-
-        PlaceEntity fromPlace = entity.getFromCode();
-        PlaceEntity toPlace = entity.getToCode();
-        isPlaceNull(fromPlace, toPlace);
-        RouteResponse route = new RouteResponse();
-        route.setFrom(entity.getFromCode().getName());
-        route.setTo(entity.getToCode().getName());
-        route.setCost(entity.getCost());
-        route.setTransportType(entity.getRouteType());
-        route.setDuration(entity.getDuration());
-        return route;
-    }
-
-    /**
-     * This will check Source and Destination is valid or not
-     * @param placeEntityFrom
-     * @param placeEntityTo
-     * @throws ResourceNotFoundException
-     */
-    private void isPlaceNull(PlaceEntity placeEntityFrom, PlaceEntity placeEntityTo) throws ResourceNotFoundException {
-        if (placeEntityFrom == null) {
-            throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
-                    ErrorCodes.CODE.SOURCE_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.SOURCE_NOT_FOUND));
-        }
-        if (placeEntityTo == null) {
-            throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
-                    ErrorCodes.CODE.DESTINATION_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
-        }
+        return results;
     }
 }

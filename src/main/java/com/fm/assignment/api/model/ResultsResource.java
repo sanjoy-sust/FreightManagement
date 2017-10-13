@@ -9,8 +9,8 @@ import java.util.List;
  * @since 06/10/2017.
  */
 @Data
-public class Results {
-    private List<RouteResponse> route;
+public class ResultsResource {
+    private List<RouteResource> route;
     private Double totalCost;
     private Long totalDuration;
 

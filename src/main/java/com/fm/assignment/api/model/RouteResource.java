@@ -12,7 +12,7 @@ import javax.persistence.Enumerated;
  * @since 06/10/2017.
  */
 @Data
-public class RouteResponse {
+public class RouteResource {
     String from;
     String to;
     @Enumerated(EnumType.STRING)

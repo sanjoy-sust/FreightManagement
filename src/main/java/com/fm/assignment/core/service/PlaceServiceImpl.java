@@ -28,6 +28,9 @@ public class PlaceServiceImpl implements PlaceService {
     @Autowired
     private PlaceRepository placeRepository;
 
+    @Autowired
+    private ParamAndEntityBuilder paramAndEntityBuilder;
+
     @Override
     public Long addPlace(PlaceParam placeParam) throws DatabaseException {
         PlaceEntity entity = new PlaceEntity();
@@ -56,7 +59,7 @@ public class PlaceServiceImpl implements PlaceService {
         List<PlaceEntity> locationsWithinDistance = placeRepository.findLocationWithin(latitude,longitude,distance);
         for (PlaceEntity entity :locationsWithinDistance)
         {
-            locationWithinParams.add(ParamAndEntityBuilder.buildPlaceParam(entity));
+            locationWithinParams.add(paramAndEntityBuilder.buildPlaceParam(entity));
         }
         return locationWithinParams;
     }

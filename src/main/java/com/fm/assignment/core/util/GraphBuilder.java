@@ -53,6 +53,6 @@ public class GraphBuilder{
                     ErrorCodes.CODE.PATH_NOT_FOUND,
                     ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PATH_NOT_FOUND));
         }
-        return Collections.unmodifiableMap(paths);
+        return paths;
     }
 }

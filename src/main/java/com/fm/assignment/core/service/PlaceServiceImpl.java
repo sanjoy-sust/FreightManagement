@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /** This service is used to add Locations to location table
  * @author Sanjoy Kumer Deb
@@ -57,10 +58,7 @@ public class PlaceServiceImpl implements PlaceService {
     public List<PlaceParam> getAllNearestPlaces(Double latitude,Double longitude,Double distance) {
         List<PlaceParam> locationWithinParams = new ArrayList<>();
         List<PlaceEntity> locationsWithinDistance = placeRepository.findLocationWithin(latitude,longitude,distance);
-        for (PlaceEntity entity :locationsWithinDistance)
-        {
-            locationWithinParams.add(paramAndEntityBuilder.buildPlaceParam(entity));
-        }
+        locationWithinParams.addAll(locationsWithinDistance.stream().map(paramAndEntityBuilder::buildPlaceParam).collect(Collectors.toList()));
         return locationWithinParams;
     }
 }

@@ -2,6 +2,7 @@ package com.fm.assignment.core.dao;
 
 import com.fm.assignment.core.entity.PlaceEntity;
 import com.vividsolutions.jts.geom.Geometry;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,6 +33,7 @@ public interface PlaceRepository extends JpaRepository<PlaceEntity, Long> {
             "    inner join \n" +
             "    place as p\n" +
             "    on b.id = p.id",nativeQuery = true)
+    @Cacheable("findLocationWithin")
     List<PlaceEntity> findLocationWithin(@Param("latitude")Double latitude,@Param("longitude")Double longitude,@Param("distance") double distance);
 }
 

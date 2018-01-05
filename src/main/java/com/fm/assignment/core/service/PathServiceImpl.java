@@ -165,16 +165,8 @@ public class PathServiceImpl implements PathService {
                     pathEntityList.addAll(pathRepository.findByContainerSize(param.getContainerSize()));
                     buildGraph(paths, pathEntityList);
                     break;
-                case Road:
-                    pathEntityList.addAll(pathRepository.findByRouteTypeAndContainerSize(TransportTypeEnum.Road, param.getContainerSize()));
-                    buildGraph(paths, pathEntityList);
-                    break;
-                case Ocean:
-                    pathEntityList.addAll(pathRepository.findByRouteTypeAndContainerSize(TransportTypeEnum.Ocean, param.getContainerSize()));
-                    buildGraph(paths, pathEntityList);
-                    break;
-                case Air:
-                    pathEntityList.addAll(pathRepository.findByRouteTypeAndContainerSize(TransportTypeEnum.Air, param.getContainerSize()));
+                default:
+                    pathEntityList.addAll(pathRepository.findByRouteTypeAndContainerSize(transportTypeEnum, param.getContainerSize()));
                     buildGraph(paths, pathEntityList);
                     break;
             }

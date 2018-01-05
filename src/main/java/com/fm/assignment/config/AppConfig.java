@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.omg.CORBA.UNKNOWN;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * @author Sanjoy Kumer Deb
@@ -13,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  */
 @EnableWebMvc
 @Configuration
-public class AppConfig {
+public class AppConfig extends WebMvcConfigurerAdapter {
     /**
      * This bean is customised to allow Quoted fields as field data.
      * Ex. : Cox's Bazar as place name. without this bean it will get exception.
@@ -26,4 +28,11 @@ public class AppConfig {
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         return objectMapper;
     }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**");
+
+    }
+
 }

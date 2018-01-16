@@ -1,6 +1,5 @@
-package com.fm.assignment;
+package com.fm.assignment.repository;
 
-import com.fm.assignment.api.controller.PathController;
 import com.fm.assignment.core.dao.PathRepository;
 import com.fm.assignment.core.entity.PathEntity;
 import org.junit.Assert;
@@ -12,15 +11,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-
+/**
+ * Created by Lenovo on 16/01/2018.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class FreightManagementApplicationTests {
-	@Autowired
-	PathController pathController;
-	@Test
-	public void contextLoads(){
+public class PathRepositoryTest {
+    @Autowired
+    PathRepository pathRepository;
 
-	}
-
+    @Test
+    public void findPathByContainerSize()
+    {
+        List<PathEntity> byContainerSize = pathRepository.findByContainerSize(20);
+        Assert.assertNotNull(byContainerSize);
+    }
 }

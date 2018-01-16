@@ -23,9 +23,34 @@ public class PlaceRepositoryTest {
     PlaceRepository placeRepository;
 
     @Test
-    public void findPathByName()
-    {
-        PlaceEntity syl = placeRepository.findByName("Comilla");
-        Assert.assertNotNull(syl);
+    public void addTest() {
+        PlaceEntity placeEntity = new PlaceEntity();
+        placeEntity.setName("Sylhet");
+        placeEntity.setCode("SYL");
+        placeEntity.setLatitude(24.894929);
+        placeEntity.setLongitude(91.868706);
+        PlaceEntity save = placeRepository.save(placeEntity);
+        long id = save.getId();
+        Assert.assertNotNull(save);
+        placeRepository.delete(save);
+        Assert.assertNull(placeRepository.findOne(id));
+    }
+
+    @Test(expected = Exception.class)
+    public void addEmptyObj() {
+        PlaceEntity placeEntity = new PlaceEntity();
+        placeRepository.save(placeEntity);
+    }
+
+    @Test
+    public void findPathByName() {
+        PlaceEntity placeEntity = placeRepository.findByName("Comilla");
+        Assert.assertEquals(placeEntity.getName(), "Comilla");
+    }
+
+    @Test
+    public void findPathByVal() {
+        PlaceEntity placeEntity = placeRepository.findByCode("CML");
+        Assert.assertEquals(placeEntity.getName(), "Comilla");
     }
 }

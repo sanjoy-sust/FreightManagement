@@ -1,8 +1,6 @@
 package com.fm.assignment.repository;
 
-import com.fm.assignment.core.dao.PathRepository;
 import com.fm.assignment.core.dao.PlaceRepository;
-import com.fm.assignment.core.entity.PathEntity;
 import com.fm.assignment.core.entity.PlaceEntity;
 import com.fm.assignment.repository.constants.PlaceEntityConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.persistence.NonUniqueResultException;
-import java.util.List;
 
 /**
  * Created by Lenovo on 17/01/2018.
@@ -82,6 +77,32 @@ public class PlaceRepositoryTest {
         }finally {
             placeRepository.delete(placeEntity);
         }
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void checkNullCodeEntry() {
+        PlaceEntity placeEntity = new PlaceEntity();
+        placeEntity.setName(PlaceEntityConstants.PLACE_NAME);
+        placeEntity.setLatitude(PlaceEntityConstants.PLACE_LATITUDE);
+        placeEntity.setLongitude(PlaceEntityConstants.PLACE_LONGITUDE);
+        placeRepository.save(placeEntity);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void checkNullNameEntry() {
+        PlaceEntity placeEntity = new PlaceEntity();
+        placeEntity.setCode(PlaceEntityConstants.PLACE_CODE);
+        placeEntity.setLatitude(PlaceEntityConstants.PLACE_LATITUDE);
+        placeEntity.setLongitude(PlaceEntityConstants.PLACE_LONGITUDE);
+        placeRepository.save(placeEntity);
+    }
+
+    @Test(expected = DataIntegrityViolationException.class)
+    public void checkNullLatLongEntry() {
+        PlaceEntity placeEntity = new PlaceEntity();
+        placeEntity.setName(PlaceEntityConstants.PLACE_NAME);
+        placeEntity.setCode(PlaceEntityConstants.PLACE_CODE);
+        placeRepository.save(placeEntity);
     }
 
     private PlaceEntity savePlaceData() {

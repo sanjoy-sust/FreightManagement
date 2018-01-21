@@ -4,6 +4,7 @@ import com.fm.assignment.core.dao.PathRepository;
 import com.fm.assignment.core.dao.PlaceRepository;
 import com.fm.assignment.core.entity.PathEntity;
 import com.fm.assignment.core.entity.PlaceEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,18 +19,14 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class PlaceRepositoryTest {
     @Autowired
     PlaceRepository placeRepository;
 
     @Test
     public void addTest() {
-        PlaceEntity placeEntity = new PlaceEntity();
-        placeEntity.setName("Sylhet");
-        placeEntity.setCode("SYL");
-        placeEntity.setLatitude(24.894929);
-        placeEntity.setLongitude(91.868706);
-        PlaceEntity save = placeRepository.save(placeEntity);
+        PlaceEntity save = savePlaceData();
         long id = save.getId();
         Assert.assertNotNull(save);
         placeRepository.delete(save);
@@ -44,13 +41,47 @@ public class PlaceRepositoryTest {
 
     @Test
     public void findPathByName() {
-        PlaceEntity placeEntity = placeRepository.findByName("Comilla");
-        Assert.assertEquals(placeEntity.getName(), "Comilla");
+        PlaceEntity placeEntity = savePlaceData();
+        Assert.assertEquals(placeEntity.getName(), "DD");
     }
 
     @Test
     public void findPathByVal() {
-        PlaceEntity placeEntity = placeRepository.findByCode("CML");
-        Assert.assertEquals(placeEntity.getName(), "Comilla");
+        PlaceEntity pe = savePlaceData();
+        PlaceEntity save = placeRepository.save(pe);
+        PlaceEntity placeEntity = placeRepository.findByCode("CMI");
+        Assert.assertEquals(placeEntity.getName(), "DD");
+        placeRepository.delete(save);
+    }
+
+    @Test
+     public void findPathByValNotExits() {
+        PlaceEntity placeEntity = null;
+        placeEntity = placeRepository.findByCode("CMI");
+        if(placeEntity != null)
+        {
+            placeRepository.delete(placeEntity);
+            PlaceEntity pe = savePlaceData();
+            PlaceEntity save = placeRepository.save(pe);
+            placeRepository.delete(save);
+        }
+        placeEntity = placeRepository.findByCode("CMI");
+        Assert.assertNull(placeEntity);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void findPathByValNullPointer() {
+        PlaceEntity placeEntity = placeRepository.findByCode("CMI");
+        String name = placeEntity.getName();
+        log.error(name);
+    }
+
+    private PlaceEntity savePlaceData() {
+        PlaceEntity pe = new PlaceEntity();
+        pe.setName("DD");
+        pe.setCode("CMI");
+        pe.setLatitude(23.894929);
+        pe.setLongitude(90.868706);
+        return pe;
     }
 }

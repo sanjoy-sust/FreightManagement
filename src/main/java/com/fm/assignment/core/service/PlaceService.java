@@ -16,4 +16,5 @@ public interface PlaceService {
     Long addPlace(PlaceParam param) throws DatabaseException;
     Long updatePlace(long id,PlaceResource resource);
     List<PlaceParam> getAllNearestPlaces(Double latitude,Double longitude,Double distance);
+    List<PlaceParam> getAllPlaces();
 }

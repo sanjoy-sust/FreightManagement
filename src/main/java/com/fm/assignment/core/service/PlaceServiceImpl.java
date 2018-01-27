@@ -61,4 +61,12 @@ public class PlaceServiceImpl implements PlaceService {
         locationWithinParams.addAll(locationsWithinDistance.stream().map(paramAndEntityBuilder::buildPlaceParam).collect(Collectors.toList()));
         return locationWithinParams;
     }
+
+    @Override
+    public List<PlaceParam> getAllPlaces() {
+        List<PlaceEntity> placeEntities = placeRepository.findAll();
+        List<PlaceParam> placeParams = new ArrayList<>();
+        placeParams.addAll(placeEntities.stream().map(paramAndEntityBuilder::buildPlaceParam).collect(Collectors.toList()));
+        return placeParams;
+    }
 }

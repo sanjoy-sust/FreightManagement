@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +32,14 @@ public class PlaceController {
     @GetMapping
     public List<PlaceResource> getAll()
     {
-        return null;
+        List<PlaceParam> placeParams = placeService.getAllPlaces();
+        List<PlaceResource> placeResourceList = new ArrayList<>();
+        for (PlaceParam placeParam:placeParams)
+        {
+            PlaceResource resource = RequestAndParamBuilder.buildPlaceResource(placeParam);
+            placeResourceList.add(resource);
+        }
+        return placeResourceList;
     }
 
     @GetMapping(value = "{id}")

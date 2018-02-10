@@ -11,21 +11,21 @@ public class ErrorCodes {
     public interface Feature{
         String PATH_FIND = "Path Find";
         String PATH_ADD = "Path Add";
-        String PLACE_ADD = "Path Add";
+        String PLACE_ADD = "Place Add";
         String UNKNOWN = "Unknown";
     }
 
     public interface CODE{
-        String PATH_NOT_FOUND = "ERR-230";
-        String SOURCE_NOT_FOUND = "ERR-231";
-        String DESTINATION_NOT_FOUND = "ERR-232";
-        String COST_DURATION_NOT_MATCHED = "ERR-233";
-        String ROUTE_TYPE_OR_CONTAINER_NOT_MATCHED = "ERR-234";
-        String PATH_SAVE_FAIL = "ERR-233";
-        String PLACE_SAVE_FAIL = "ERR-234";
-        String REMOTE_API_FAIL = "ERR-235";
-        String METHOD_ARG_NOT_VALID = "ERR-990";
-        String GENERIC_ERROR = "ERR-999";
+        String PATH_NOT_FOUND = "ERR-4200";
+        String SOURCE_NOT_FOUND = "ERR-4201";
+        String DESTINATION_NOT_FOUND = "ERR-4202";
+        String COST_DURATION_NOT_MATCHED = "ERR-4203";
+        String ROUTE_TYPE_OR_CONTAINER_NOT_MATCHED = "ERR-4204";
+        String PATH_SAVE_FAIL = "ERR-4301";
+        String PLACE_SAVE_FAIL = "ERR-4302";
+        String REMOTE_API_FAIL = "ERR-4000";
+        String METHOD_ARG_NOT_VALID = "ERR-4001";
+        String GENERIC_ERROR = "ERR-4444";
     }
 
     public static final Map<String, String> REASON_MAP = new HashMap<String, String>();

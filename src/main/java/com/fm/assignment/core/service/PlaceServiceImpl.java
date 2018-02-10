@@ -7,11 +7,13 @@ import com.fm.assignment.core.params.PlaceParam;
 import com.fm.assignment.core.util.ParamAndEntityBuilder;
 import com.fm.assignment.errorhandler.DatabaseException;
 import com.fm.assignment.errorhandler.ErrorCodes;
+import com.fm.assignment.mail.EmailService;
 import com.vividsolutions.jts.awt.PointShapeFactory;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
  * @since 07/10/2017.
  */
 @Service
+@Slf4j
 public class PlaceServiceImpl implements PlaceService {
 
     @Autowired
@@ -31,6 +34,9 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Autowired
     private ParamAndEntityBuilder paramAndEntityBuilder;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Long addPlace(PlaceParam placeParam) throws DatabaseException {
@@ -42,7 +48,9 @@ public class PlaceServiceImpl implements PlaceService {
         PlaceEntity savedPlaceEntity;
         try {
             savedPlaceEntity = placeRepository.save(entity);
+            emailService.sendSimpleMessage("flopcoder.82@gmail.com","Test","Test Freight Management");
         } catch (Exception exp) {
+            log.info("{}",exp);
             throw new DatabaseException(ErrorCodes.Feature.PLACE_ADD,
                     ErrorCodes.CODE.PLACE_SAVE_FAIL,ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PLACE_SAVE_FAIL));
         }

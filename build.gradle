@@ -32,6 +32,8 @@ dependencies {
 	compile('org.projectlombok:lombok:1.14.8')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('com.vividsolutions:jts:1.13')
-    testCompile('org.springframework.boot:spring-boot-starter-test:1.5.6.RELEASE')
+	compile('org.springframework:spring-context-support:4.3.5.RELEASE')
+	compile('org.springframework.boot:spring-boot-starter-mail:1.5.9.RELEASE')
+	testCompile('org.springframework.boot:spring-boot-starter-test:1.5.6.RELEASE')
     testCompile('com.h2database:h2:1.4.195')
 }

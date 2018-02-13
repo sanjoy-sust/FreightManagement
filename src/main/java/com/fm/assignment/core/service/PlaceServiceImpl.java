@@ -1,8 +1,12 @@
 package com.fm.assignment.core.service;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.fm.assignment.core.entity.PlaceEntity;
 import com.fm.assignment.api.model.PlaceResource;
 import com.fm.assignment.core.dao.PlaceRepository;
+import com.fm.assignment.core.enums.AttachmentYnEnum;
+import com.fm.assignment.core.enums.MailStatusEnum;
+import com.fm.assignment.core.params.MailBoxParam;
 import com.fm.assignment.core.params.PlaceParam;
 import com.fm.assignment.core.util.ParamAndEntityBuilder;
 import com.fm.assignment.errorhandler.DatabaseException;
@@ -16,6 +20,7 @@ import com.vividsolutions.jts.geom.Point;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +41,10 @@ public class PlaceServiceImpl implements PlaceService {
     private ParamAndEntityBuilder paramAndEntityBuilder;
 
     @Autowired
-    private EmailService emailService;
+    private MailBoxService emailService;
 
     @Override
+    @Transactional
     public Long addPlace(PlaceParam placeParam) throws DatabaseException {
         PlaceEntity entity = new PlaceEntity();
         entity.setCode(placeParam.getCode());
@@ -48,7 +54,7 @@ public class PlaceServiceImpl implements PlaceService {
         PlaceEntity savedPlaceEntity;
         try {
             savedPlaceEntity = placeRepository.save(entity);
-            emailService.sendSimpleMessage("flopcoder.82@gmail.com","Test","Test Freight Management");
+            addMailBox(savedPlaceEntity);
         } catch (Exception exp) {
             log.info("{}",exp);
             throw new DatabaseException(ErrorCodes.Feature.PLACE_ADD,
@@ -57,7 +63,24 @@ public class PlaceServiceImpl implements PlaceService {
         return savedPlaceEntity.getId();
     }
 
+    private void addMailBox(PlaceEntity placeEntity) {
+        MailBoxParam param = new MailBoxParam();
+        param.setToEmail("sanjoyd.cse@gmail.com");
+        param.setSubject("Freight Management Place Added.");
+        param.setText("<html><body><h1>Place added for "+placeEntity.getName()+"</h1></br>" +
+                "<p>" +
+                "Latitude : "+placeEntity.getLatitude()+"</br>" +
+                "Longitude : "+placeEntity.getLongitude()+"</br>" +
+                "</p>" +
+                "</body></html>");
+        param.setAttachmentYN(AttachmentYnEnum.YES);
+        param.setAttachmentName("teddy.jpeg");
+        param.setStatus(MailStatusEnum.PENDING);
+        emailService.addMailBox(param);
+    }
+
     @Override
+    @Transactional
     public Long updatePlace(long id, PlaceResource resource) {
         return null;
     }

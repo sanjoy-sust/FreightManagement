@@ -4,14 +4,14 @@ import com.fm.assignment.core.dao.PathRepository;
 import com.fm.assignment.core.entity.PathEntity;
 import com.fm.assignment.core.dao.PlaceRepository;
 import com.fm.assignment.core.entity.PlaceEntity;
+import com.fm.assignment.core.enums.AttachmentYnEnum;
+import com.fm.assignment.core.enums.MailStatusEnum;
 import com.fm.assignment.core.enums.TransportTypeEnum;
-import com.fm.assignment.core.params.FindPathParam;
-import com.fm.assignment.core.params.PathParam;
-import com.fm.assignment.core.params.PlaceParam;
-import com.fm.assignment.core.params.ResultParam;
+import com.fm.assignment.core.params.*;
 import com.fm.assignment.core.util.ParamAndEntityBuilder;
 import com.fm.assignment.core.validator.FindPathValidator;
 import com.fm.assignment.errorhandler.RemoteApiException;
+import com.fm.assignment.mail.EmailService;
 import com.fm.assignment.remote.LatLongService;
 import com.fm.assignment.remote.LatLongModel;
 import com.fm.assignment.errorhandler.DatabaseException;
@@ -23,6 +23,7 @@ import com.fm.assignment.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,9 @@ import java.util.stream.Stream;
 
 /**
  * This class use for path related task.
+ *
  * @author Sanjoy Kumer Deb
- * @since  06/10/2017.
+ * @since 06/10/2017.
  */
 @Service
 @Slf4j
@@ -49,38 +51,45 @@ public class PathServiceImpl implements PathService {
     private LatLongService latLongService;
 
     @Autowired
+    private MailBoxService mailBoxService;
+
+    @Autowired
     private ParamAndEntityBuilder paramAndEntityBuilder;
 
     /**
      * This will use to add path to path table.
+     *
      * @param pathParam
      * @return
      * @throws ResourceNotFoundException
      * @throws DatabaseException
      */
     @Override
+    @Transactional
     public long addPath(PathParam pathParam) throws ResourceNotFoundException, DatabaseException {
         log.info("Adding Path : {}", pathParam);
         PathEntity pathEntity = paramAndEntityBuilder.buildPathEntity(pathParam);
         PathEntity savedEntity;
         try {
             savedEntity = pathRepository.save(pathEntity);
+            addMailBox(savedEntity);
         } catch (Exception exp) {
             throw new DatabaseException(ErrorCodes.Feature.PATH_ADD,
                     ErrorCodes.CODE.PATH_SAVE_FAIL, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PATH_SAVE_FAIL));
         }
-        log.info("Path Added : {}",savedEntity);
+        log.info("Path Added : {}", savedEntity);
         return savedEntity.getId();
     }
 
     /**
      * This method will use to add all possible path from source to destination.
      * If destination not found then use nearest point to find Path from source to destination.
-     * @TODO need to introduce a layer like params layer. for example FindPathParam instead of FindPathRequest.
-     * Its not recommended to use request object to service layer.
+     *
      * @param param
      * @return
      * @throws ResourceNotFoundException
+     * @TODO need to introduce a layer like params layer. for example FindPathParam instead of FindPathRequest.
+     * Its not recommended to use request object to service layer.
      */
     @Override
     public List<ResultParam> getAllPaths(FindPathParam param) throws ResourceNotFoundException, RemoteApiException {
@@ -94,23 +103,21 @@ public class PathServiceImpl implements PathService {
         }
 
         List<List<PathEntity>> allPaths = new ArrayList<>();
-        if(destinationCode != null)
-        {
+        if (destinationCode != null) {
             /*Find All posible path from source to destination*/
             allPaths = getPaths(param, sourceCode, destinationCode);
         }
         /*If destination not found then find near location for destination within 50KM.*/
         else if (destinationCode == null) {
             List<PlaceParam> derivedLocationAsDestination = findDerivedLocationAsDestination(param);
-            for (PlaceParam placeParam: derivedLocationAsDestination)
-            {
+            for (PlaceParam placeParam : derivedLocationAsDestination) {
                 List<List<PathEntity>> paths = getPaths(param, sourceCode, placeParam.getCode());
                 allPaths.addAll(paths);
             }
         }
 
 
-        if (allPaths == null || allPaths.size() == 0 ) {
+        if (allPaths == null || allPaths.size() == 0) {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.PATH_NOT_FOUND, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.PATH_NOT_FOUND));
         }
@@ -126,11 +133,11 @@ public class PathServiceImpl implements PathService {
      * Here I use google map api to find latitude and longitude for which destination searched for.
      * Then find nearest locations available within 50KM from our predefined location.
      *
-     * @TODO if nearest location not match then next nearest location to be calculated.
-     * @TODO if two nearest location find with same distance then both will pick.
      * @param param
      * @return
      * @throws Exception
+     * @TODO if nearest location not match then next nearest location to be calculated.
+     * @TODO if two nearest location find with same distance then both will pick.
      */
     private List<PlaceParam> findDerivedLocationAsDestination(FindPathParam param) throws RemoteApiException, ResourceNotFoundException {
         LatLongModel latLongModel = latLongService.getLatLongPositions(param.getDestination());
@@ -138,8 +145,7 @@ public class PathServiceImpl implements PathService {
                 latLongModel.getLatitude(),
                 latLongModel.getLongitude(),
                 Constants.MINIMUM_DISTANCE_TO_NEAR_LOCATION);
-        if(allDerivedLocations.size() ==0)
-        {
+        if (allDerivedLocations.size() == 0) {
             throw new ResourceNotFoundException(ErrorCodes.Feature.PATH_FIND,
                     ErrorCodes.CODE.DESTINATION_NOT_FOUND,
                     ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.DESTINATION_NOT_FOUND));
@@ -149,12 +155,13 @@ public class PathServiceImpl implements PathService {
 
     /**
      * This method used to find all paths from DB Using transportationMode and container size.
-     * @TODO here we can use factory pattern. I will implement it in future
+     *
      * @param param
      * @param sourceCode
      * @param destinationCode
      * @return
      * @throws ResourceNotFoundException
+     * @TODO here we can use factory pattern. I will implement it in future
      */
     private List<List<PathEntity>> getPaths(FindPathParam param, String sourceCode, String destinationCode) throws ResourceNotFoundException {
         GraphBuilder paths = new GraphBuilder();
@@ -182,7 +189,7 @@ public class PathServiceImpl implements PathService {
     }
 
     /**
-     * @param paths //pass to build graph for different combination of routes
+     * @param paths          //pass to build graph for different combination of routes
      * @param pathEntityList
      */
     private void buildGraph(GraphBuilder paths, List<PathEntity> pathEntityList) throws ResourceNotFoundException {
@@ -224,5 +231,26 @@ public class PathServiceImpl implements PathService {
                     ErrorCodes.CODE.COST_DURATION_NOT_MATCHED, ErrorCodes.REASON_MAP.get(ErrorCodes.CODE.COST_DURATION_NOT_MATCHED));
         }
         return results;
+    }
+
+    /**
+     * This is for temporary when message template feature add then this code will remove
+     *
+     * @param pathEntity
+     */
+    private void addMailBox(PathEntity pathEntity) {
+        MailBoxParam param = new MailBoxParam();
+        param.setToEmail("sanjoyd.cse@gmail.com");
+        param.setSubject("Freight Management Path Added.");
+        param.setText("<html><body><h1>Path added From " + pathEntity.getFromCode().getName() + " to " + pathEntity.getToCode().getName() + "</h1></br>" +
+                "<p>" +
+                "Route Type : " + pathEntity.getRouteType().name() + "</br>" +
+                "Container Size : " + pathEntity.getContainerSize() + "</br>" +
+                "</p>" +
+                "</body></html>");
+        param.setAttachmentYN(AttachmentYnEnum.YES);
+        param.setAttachmentName("teddy.jpeg");
+        param.setStatus(MailStatusEnum.PENDING);
+        mailBoxService.addMailBox(param);
     }
 }

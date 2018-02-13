@@ -59,7 +59,7 @@ public class ParamAndEntityBuilder {
         PathEntity pathEntity = new PathEntity();
         pathEntity.setId(param.getId());
         PlaceEntity from = placeRepository.findByName(param.getFrom());
-        PlaceEntity to = placeRepository.findByName(param.getFrom());
+        PlaceEntity to = placeRepository.findByName(param.getTo());
         FindPathValidator.isPlaceNull(from, to);
         pathEntity.setFromCode(from);
         pathEntity.setToCode(to);

@@ -25,8 +25,8 @@ import java.io.IOException;
 public class EmailServiceImpl implements EmailService {
     @Autowired
     public JavaMailSender emailSender;
-    private final String imageLink = "images/Velentine.jpg";
-    private final String imageNameToSend = "Velantine.jpeg";
+    private final String imageLink = "images/teddy.jpeg";
+    private final String imageNameToSend = "teddy.jpeg";
 
     @Override
     public void sendSimpleMessage(String to, String subject, String text) throws IOException, MessagingException {
@@ -53,7 +53,7 @@ public class EmailServiceImpl implements EmailService {
             message.setContent(multipart);
             emailSender.send(message);
         } catch (MessagingException | IOException e ) {
-            log.error("Exception catched {}",e);
+            log.info("Exception catched {}",e);
             throw e;
         }
     }

@@ -40,7 +40,7 @@ public class EmailScheduler {
             {
                 param.setStatus(MailStatusEnum.FAILED);
                 mailBoxService.updateMailBox(param);
-                log.info("Email SENT Failed to {}", param.getToEmail());
+                log.info("Email SENT Failed to {} {}", param.getToEmail(),ert);
             }
 
         }

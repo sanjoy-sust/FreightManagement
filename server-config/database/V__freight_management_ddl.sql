@@ -3,7 +3,7 @@ CREATE TABLE `freight_management`.`mail_box` (
   `TO_EMAIL` varchar(45) NOT NULL,
   `SUBJECT` varchar(45) NOT NULL,
   `BODY_TEXT` varchar(255) NOT NULL,
-  `attachment_yn` varchar(1) NOT NULL,
+  `attachment_yn` varchar(10) NOT NULL,
   `attachment_name` varchar(255),
   `status` varchar(255) NOT NULL,
   `CREATED_BY` varchar(255) NOT NULL DEFAULT 'ADMIN',

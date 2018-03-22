@@ -1,4 +1,4 @@
-# ## Freight Management
+# ## Standard Enterprise Application Structure using Spring boot
 Simple Spring boot project.
 
 This is a project to find all paths and cost between two locations.

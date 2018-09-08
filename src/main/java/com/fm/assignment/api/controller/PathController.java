@@ -57,17 +57,23 @@ public class PathController {
 
     @GetMapping
     public List<PathResource> getAll() {
-        return null;
+        List<PathParam> params = pathService.findAll();
+        List<PathResource> resourceList = new ArrayList<>();
+        for (PathParam param: params)
+        {
+            resourceList.add(RequestAndParamBuilder.buildPathResource(param));
+        }
+        return resourceList;
     }
 
     @GetMapping(value = "{id}")
     public PathResource getOne(@PathVariable long id) {
-        return null;
+        return RequestAndParamBuilder.buildPathResource(pathService.findById(id));
     }
 
     @PutMapping(value = "{id}")
-    public PathResource updateOne(@PathVariable long id, @RequestBody PathResource resource) {
-        return null;
+    public Long updateOne(@PathVariable long id, @RequestBody PathResource resource) throws ResourceNotFoundException {
+        return pathService.updateOne(id,RequestAndParamBuilder.buildPathParam(resource));
     }
 
     @DeleteMapping(value = "{id}")

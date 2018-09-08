@@ -20,4 +20,7 @@ import java.util.List;
 public interface PathService {
     long addPath(PathParam pathParam) throws ResourceNotFoundException, DatabaseException;
     List<ResultParam> getAllPaths(FindPathParam param) throws Exception;
+    PathParam findById(long id);
+    List<PathParam> findAll();
+    Long updateOne(long id, PathParam pathParam) throws ResourceNotFoundException;
 }

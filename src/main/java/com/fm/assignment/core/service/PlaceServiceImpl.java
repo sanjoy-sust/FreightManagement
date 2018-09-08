@@ -81,8 +81,10 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Override
     @Transactional
-    public Long updatePlace(long id, PlaceResource resource) {
-        return null;
+    public Long updatePlace(long id, PlaceParam param) {
+        PlaceEntity placeEntity = paramAndEntityBuilder.buildPlaceEntity(param);
+        PlaceEntity entity = placeRepository.save(placeEntity);
+        return entity.getId();
     }
 
     @Override
@@ -99,5 +101,15 @@ public class PlaceServiceImpl implements PlaceService {
         List<PlaceParam> placeParams = new ArrayList<>();
         placeParams.addAll(placeEntities.stream().map(paramAndEntityBuilder::buildPlaceParam).collect(Collectors.toList()));
         return placeParams;
+    }
+
+    @Override
+    public PlaceParam findOne(long id) {
+        PlaceParam param = null;
+        PlaceEntity placeEntity = placeRepository.findOne(id);
+        if(placeEntity != null) {
+            param = paramAndEntityBuilder.buildPlaceParam(placeEntity);
+        }
+        return param;
     }
 }

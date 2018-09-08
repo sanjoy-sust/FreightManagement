@@ -14,7 +14,8 @@ import java.util.List;
  */
 public interface PlaceService {
     Long addPlace(PlaceParam param) throws DatabaseException;
-    Long updatePlace(long id,PlaceResource resource);
+    Long updatePlace(long id,PlaceParam param);
     List<PlaceParam> getAllNearestPlaces(Double latitude,Double longitude,Double distance);
     List<PlaceParam> getAllPlaces();
+    PlaceParam findOne(long id);
 }

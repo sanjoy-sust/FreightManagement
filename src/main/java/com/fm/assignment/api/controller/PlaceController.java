@@ -45,13 +45,15 @@ public class PlaceController {
     @GetMapping(value = "{id}")
     public PlaceResource getOne(@PathVariable long id)
     {
-        return null;
+        PlaceParam param = placeService.findOne(id);
+        return RequestAndParamBuilder.buildPlaceResource(param);
     }
 
     @PutMapping(value = "{id}")
-    public PlaceResource updateOne(@PathVariable long id,@RequestBody PlaceResource placeResource)
+    public Long updateOne(@PathVariable long id,@RequestBody PlaceResource placeResource)
     {
-        return null;
+        return placeService.updatePlace(id,
+                RequestAndParamBuilder.buildPlaceParam(placeResource));
     }
 
     @DeleteMapping(value = "{id}")

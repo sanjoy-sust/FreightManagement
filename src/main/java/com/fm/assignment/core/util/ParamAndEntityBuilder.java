@@ -30,7 +30,7 @@ public class ParamAndEntityBuilder {
                 .build();
     }
 
-    public PlaceEntity buildPlaceResource(PlaceParam param) {
+    public PlaceEntity buildPlaceEntity(PlaceParam param) {
 
         PlaceEntity placeEntity = new PlaceEntity();
         placeEntity.setId(param.getId());

@@ -253,4 +253,34 @@ public class PathServiceImpl implements PathService {
         param.setStatus(MailStatusEnum.PENDING);
         mailBoxService.addMailBox(param);
     }
+
+    @Override
+    public PathParam findById(long id) {
+        PathParam pathParam = null;
+        PathEntity pathEntity = pathRepository.findOne(id);
+        if(pathEntity != null)
+            pathParam = paramAndEntityBuilder.buildPathParam(pathEntity);
+        return pathParam;
+    }
+
+    @Override
+    public List<PathParam> findAll() {
+        List<PathEntity> pathEntityList = pathRepository.findAll();
+        List<PathParam> pathParams = new ArrayList<>();
+        for (PathEntity pathEntity:pathEntityList){
+            PathParam param = null;
+            if(pathEntity != null)
+                param = paramAndEntityBuilder.buildPathParam(pathEntity);
+            pathParams.add(param);
+        }
+        return pathParams;
+    }
+
+    @Override
+    public Long updateOne(long id, PathParam pathParam) throws ResourceNotFoundException {
+
+        PathEntity entity = paramAndEntityBuilder.buildPathEntity(pathParam);
+        PathEntity pathEntity = pathRepository.save(entity);
+        return pathEntity.getId();
+    }
 }

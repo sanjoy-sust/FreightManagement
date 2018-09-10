@@ -24,7 +24,7 @@ public class EmailScheduler {
     @Autowired
     private MailBoxService mailBoxService;
 
-    @Scheduled(fixedDelay = 3000)
+    @Scheduled(fixedDelay = 9000)
     public void sendEmailSchedule(){
         log.info("Email schedule started at {}",new Date().getTime());
         List<MailBoxParam> mailBoxParams = mailBoxService.getMailBoxByStatus(MailStatusEnum.PENDING);

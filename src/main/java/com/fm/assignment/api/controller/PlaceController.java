@@ -50,7 +50,7 @@ public class PlaceController {
     }
 
     @PutMapping(value = "{id}")
-    public Long updateOne(@PathVariable long id,@RequestBody PlaceResource placeResource)
+    public Long update(@PathVariable long id,@RequestBody PlaceResource placeResource)
     {
         return placeService.updatePlace(id,
                 RequestAndParamBuilder.buildPlaceParam(placeResource));

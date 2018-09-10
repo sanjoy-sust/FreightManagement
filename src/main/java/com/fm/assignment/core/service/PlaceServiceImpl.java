@@ -69,6 +69,8 @@ public class PlaceServiceImpl implements PlaceService {
         param.setSubject("Freight Management Place Added.");
         param.setText("<html><body><h1>Place added for "+placeEntity.getName()+"</h1></br>" +
                 "<p>" +
+                "<img src=\"https://raw.githubusercontent.com/sanjoy-sust/FreightManag" +
+                "ement/feature/spring-web-socket/src/main/resources/images/teddy.jpeg\" alt=\"Smiley face\" height=\"42\" width=\"42\"/>" +
                 "Latitude : "+placeEntity.getLatitude()+"</br>" +
                 "Longitude : "+placeEntity.getLongitude()+"</br>" +
                 "</p>" +

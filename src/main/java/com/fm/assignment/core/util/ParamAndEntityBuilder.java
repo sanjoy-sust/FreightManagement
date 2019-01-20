@@ -1,8 +1,10 @@
 package com.fm.assignment.core.util;
 
 import com.fm.assignment.core.dao.PlaceRepository;
+import com.fm.assignment.core.entity.MailBoxEntity;
 import com.fm.assignment.core.entity.PathEntity;
 import com.fm.assignment.core.entity.PlaceEntity;
+import com.fm.assignment.core.params.MailBoxParam;
 import com.fm.assignment.core.params.PathParam;
 import com.fm.assignment.core.params.PlaceParam;
 import com.fm.assignment.core.validator.FindPathValidator;
@@ -28,7 +30,7 @@ public class ParamAndEntityBuilder {
                 .build();
     }
 
-    public PlaceEntity buildPlaceResource(PlaceParam param) {
+    public PlaceEntity buildPlaceEntity(PlaceParam param) {
 
         PlaceEntity placeEntity = new PlaceEntity();
         placeEntity.setId(param.getId());
@@ -57,7 +59,7 @@ public class ParamAndEntityBuilder {
         PathEntity pathEntity = new PathEntity();
         pathEntity.setId(param.getId());
         PlaceEntity from = placeRepository.findByName(param.getFrom());
-        PlaceEntity to = placeRepository.findByName(param.getFrom());
+        PlaceEntity to = placeRepository.findByName(param.getTo());
         FindPathValidator.isPlaceNull(from, to);
         pathEntity.setFromCode(from);
         pathEntity.setToCode(to);
@@ -66,5 +68,34 @@ public class ParamAndEntityBuilder {
         pathEntity.setDuration(param.getDuration());
         pathEntity.setRouteType(param.getRouteType());
         return pathEntity;
+    }
+
+    public MailBoxParam buildMailBoxParam(MailBoxEntity entity){
+        MailBoxParam param = new MailBoxParam();
+
+        param.setId(entity.getId());
+        param.setToEmail(entity.getToEmail());
+        param.setAttachmentYN(entity.getAttachmentYN());
+        param.setAttachmentName(entity.getAttachmentName());
+        param.setStatus(entity.getStatus());
+        param.setSubject(entity.getSubject());
+        param.setText(entity.getText());
+
+        return param;
+    }
+
+
+    public MailBoxEntity buildMailBoxEntity(MailBoxParam param){
+        MailBoxEntity entity = new MailBoxEntity();
+
+        entity.setId(param.getId());
+        entity.setToEmail(param.getToEmail());
+        entity.setText(param.getText());
+        entity.setAttachmentYN(param.getAttachmentYN());
+        entity.setAttachmentName(param.getAttachmentName());
+        entity.setStatus(param.getStatus());
+        entity.setSubject(param.getSubject());
+
+        return entity;
     }
 }

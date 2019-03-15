@@ -30,4 +30,5 @@ public class PlaceEntity extends BaseEntity {
     private Double longitude;
     @Column(name = "LATITUDE")
     private Double latitude;
+
 }

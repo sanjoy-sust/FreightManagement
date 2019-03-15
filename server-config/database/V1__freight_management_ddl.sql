@@ -1,5 +1,4 @@
-/*Database Creation*/
-CREATE DATABASE freight_management;
+
 /*Table Creation*/
 CREATE TABLE `freight_management`.`place` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,

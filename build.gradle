@@ -5,15 +5,20 @@ buildscript {
 	repositories {
 		mavenCentral()
 		maven {url "http://www.hibernatespatial.org/repository"}
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:6.0.0-beta"
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: "org.flywaydb.flyway"
 
 group = 'com.fm'
 version = '0.0.1-SNAPSHOT'
@@ -22,6 +27,12 @@ sourceCompatibility = 1.8
 repositories {
 	mavenCentral()
     maven {url "http://www.hibernatespatial.org/repository"}
+}
+
+flyway {
+	url = 'jdbc:mysql://localhost:3306/freight_management'
+	user = 'root'
+	password = ''
 }
 
 

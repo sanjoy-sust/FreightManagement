@@ -1,4 +1,4 @@
-# ## Freight Management
+# ## Standard Enterprise Application Structure using Spring boot
 Simple Spring boot project.
 
 This is a project to find all paths and cost between two locations.
@@ -21,7 +21,7 @@ This is a project to find all paths and cost between two locations.
 5. Configure Database :  
     a) Connect to your mysql server with your credential. Mine is username: root,Password : admin   
     b) Run DDL from "**FreightManagement/server-config/database/freight_management_ddl.sql**"  
-    c) Run DML from "**FreightManagement/server-config/database/freight_management_ddl.sql**"  
+    c) Run DML from "**FreightManagement/server-config/database/freight_management_dml.sql**"  
     d) Thats fine for database setup  
     
 6. Configure project : 
